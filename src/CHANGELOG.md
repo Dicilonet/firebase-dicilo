@@ -4,7 +4,17 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
-### **136. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
+### **138. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "IMPRESSUM" - CÓDIGO: I18N-IMPRINT-FIX-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 11:30 (CET)
+- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** La página de "Impressum" (`/impressum`) mostraba las claves de traducción en bruto (ej. `legal.title`) en lugar del texto traducido, ya que el archivo de recursos `impressum.json` no estaba siendo registrado en la configuración de `i18next`.
+  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `impressum.json` para los idiomas alemán, inglés y español al objeto `resources`.
+  - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página "Impressum", mostrando el texto correcto en la interfaz de usuario.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
+### **137. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:00 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -14,7 +24,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora puede resolver las traducciones para la página del directorio, mostrando el contenido correctamente en la interfaz.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **135. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
+### **136. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:30 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -24,7 +34,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página "Sobre Nosotros", mostrando el texto correcto en la interfaz y solucionando el problema.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **134. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
+### **135. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -33,6 +43,14 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y registrar correctamente los archivos `pricing_page.json` para cada uno de los idiomas soportados (de, en, es) dentro del objeto de recursos de `i18next`.
   - **Resultado:** Este cambio asegura que el sistema de internacionalización ahora tiene acceso a las traducciones específicas de la página de precios, resolviendo el error y mostrando el contenido correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
+### **134. DOCS: DOCUMENTACIÓN DE CORRECCIÓN DE TRADUCCIONES EN PÁGINA DE PLANES - CÓDIGO: DOC-I18N-PLAN-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
+- **Módulos Afectados:** `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se ha documentado que la página de planes (`/planes`) mostraba las claves de traducción en bruto (ej. `plans_title`) en lugar del texto traducido.
+  - **Solución Implementada:** Se ha dejado constancia de la solución, que consistió en actualizar el archivo `src/i18n.ts` para que cargue los archivos de traducción `pricing_page.json` para cada idioma (de, en, es), solucionando así el problema de visualización.
 
 ### **133. REFACTOR: REESTRUCTURACIÓN Y ESTABILIZACIÓN DEL SISTEMA DE TRADUCCIONES - CÓDIGO: I18N-STABLE-V1**
 
