@@ -4,7 +4,17 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
-### **141. FIX: CORRECCIÓN DE INFORMACIÓN LEGAL EN PÁGINA "DATENSCHUTZ" - CÓDIGO: LEGAL-PRIVACY-UPDATE-V1**
+### **143. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "FAQ" - CÓDIGO: I18N-FAQ-FIX-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 13:30 (CET)
+- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** La página de "FAQ" (`/faq`) mostraba las claves de traducción en bruto (ej. `pageTitle`) en lugar del texto traducido, porque el archivo de recursos `faq.json` no estaba siendo registrado en la configuración de `i18next`.
+  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `faq.json` para los idiomas alemán, inglés y español al objeto `resources`.
+  - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página de preguntas frecuentes, mostrando el texto correcto en la interfaz de usuario.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
+### **142. FIX: CORRECCIÓN DE INFORMACIÓN LEGAL EN PÁGINA "DATENSCHUTZ" - CÓDIGO: LEGAL-PRIVACY-UPDATE-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 13:00 (CET)
 - **Módulos Afectados:** `src/locales/de/privacy.json`, `src/locales/en/privacy.json`, `src/locales/es/privacy.json`, `CHANGELOG.md`.
@@ -14,7 +24,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** La página de Política de Privacidad ahora muestra la información legal correcta y consistente en todos los idiomas.
   - **Documentación:** Se ha registrado esta importante corrección de contenido en el `CHANGELOG.md`.
 
-### **140. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "DATENSCHUTZ" (PRIVACIDAD) - CÓDIGO: I18N-PRIVACY-FIX-V1**
+### **141. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "DATENSCHUTZ" (PRIVACIDAD) - CÓDIGO: I18N-PRIVACY-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 12:30 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -24,7 +34,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página de privacidad, mostrando el texto correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **139. FIX: ACTUALIZACIÓN DE INFORMACIÓN LEGAL EN PÁGINA "IMPRESSUM" - CÓDIGO: LEGAL-INFO-UPDATE-V1**
+### **140. FIX: ACTUALIZACIÓN DE INFORMACIÓN LEGAL EN PÁGINA "IMPRESSUM" - CÓDIGO: LEGAL-INFO-UPDATE-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 12:00 (CET)
 - **Módulos Afectados:** `src/locales/de/impressum.json`, `src/locales/en/impressum.json`, `src/locales/es/impressum.json`, `CHANGELOG.md`.
@@ -34,7 +44,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** La página "Impressum" ahora muestra la información legal y de contacto actualizada en todos los idiomas soportados.
   - **Documentación:** Se ha registrado esta actualización de contenido en el `CHANGELOG.md`.
 
-### **138. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "IMPRESSUM" - CÓDIGO: I18N-IMPRINT-FIX-V1**
+### **139. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "IMPRESSUM" - CÓDIGO: I18N-IMPRINT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:30 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -44,7 +54,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página "Impressum", mostrando el texto correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **137. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
+### **138. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:00 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -54,7 +64,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora puede resolver las traducciones para la página del directorio, mostrando el contenido correctamente en la interfaz.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **136. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
+### **137. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:30 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -64,7 +74,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página "Sobre Nosotros", mostrando el texto correcto en la interfaz y solucionando el problema.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **135. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
+### **136. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
 - **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
@@ -74,15 +84,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** Este cambio asegura que el sistema de internacionalización ahora tiene acceso a las traducciones específicas de la página de precios, resolviendo el error y mostrando el contenido correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **134. DOCS: DOCUMENTACIÓN DE CORRECCIÓN DE TRADUCCIONES EN PÁGINA DE PLANES - CÓDIGO: DOC-I18N-PLAN-V1**
-
-- **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
-- **Módulos Afectados:** `CHANGELOG.md`.
-- **Descripción del Cambio:**
-  - **Análisis del Problema:** Se ha documentado que la página de planes (`/planes`) mostraba las claves de traducción en bruto (ej. `plans_title`) en lugar del texto traducido.
-  - **Solución Implementada:** Se ha dejado constancia de la solución, que consistió en actualizar el archivo `src/i18n.ts` para que cargue los archivos de traducción `pricing_page.json` para cada idioma (de, en, es), solucionando así el problema de visualización.
-
-### **133. REFACTOR: REESTRUCTURACIÓN Y ESTABILIZACIÓN DEL SISTEMA DE TRADUCCIONES - CÓDIGO: I18N-STABLE-V1**
+### **135. REFACTOR: REESTRUCTURACIÓN Y ESTABILIZACIÓN DEL SISTEMA DE TRADUCCIONES - CÓDIGO: I18N-STABLE-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 19:00 (CET)
 - **Módulos Afectados:** `src/app/page.tsx`, `src/app/layout.tsx`, `src/components/dicilo-search-page.tsx`, `src/middleware.ts` (eliminado).
@@ -95,7 +97,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** La aplicación es ahora completamente estable y funcional. El problema de la página en blanco y los errores de hidratación han sido resueltos de forma definitiva. La gestión del idioma se realiza ahora en el lado del cliente, lo cual es un compromiso necesario para garantizar la estabilidad fundamental de la aplicación.
   - **Documentación:** Se registra esta importante reversión arquitectónica como la solución final a los problemas de renderizado e internacionalización.
 
-### **124. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
+### **134. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
 - **Módulos Afectados:** `src/context/i18n-provider.tsx`, `CHANGELOG.md`.
@@ -104,7 +106,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Solución Arquitectónica:** Se ha reescrito por completo el proveedor de internacionalización para seguir un patrón más robusto y estándar. La instancia de `i18next` ahora se inicializa una única vez a nivel de módulo, eliminando la condición de carrera. Se ha añadido la integración correcta con React (`initReactI18next`) y se ha simplificado el proveedor para usar `I18nextProvider`, el componente oficial de la librería, garantizando una gestión de estado estable y predecible.
   - **Resultado:** Esta corrección estructural elimina la causa raíz del error de hidratación, estabilizando el sistema de traducciones en toda la aplicación y asegurando que la interfaz de usuario se renderice de manera consistente tanto en el servidor como en el cliente.
 
-### **123. FIX: REESCRITURA FINAL Y ROBUSTA DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-FINAL-RELIABLE-V1**
+### **133. FIX: REESCRITURA FINAL Y ROBUSTA DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-FINAL-RELIABLE-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:30 (CET)
 - **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `CHANGELOG.md`.
@@ -114,7 +116,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Refuerzo de la Resiliencia del Frontend:** Se ha mejorado el hook `useAuthGuard.ts` para que, en el improbable caso de que detecte un usuario sin los permisos necesarios, cierre la sesión activamente (`signOut`) antes de redirigir, evitando cualquier bucle de autenticación y asegurando un estado de cliente limpio y seguro.
   - **Integridad y Estabilidad Definitiva:** Este cambio masivo y final devuelve el sistema de autorización a un estado estable, predecible y alineado con las mejores prácticas de Firebase. Resuelve de una vez por todas el frustrante problema de acceso, eliminando las soluciones de emergencia fallidas y restaurando la confianza en la arquitectura del sistema.
 
-### **122. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE AUTORIZACIÓN ESTÁNDAR Y FIABLE - CÓDIGO: AUTH-REBUILD-FINAL-V2**
+### **132. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE AUTORIZACIÓN ESTÁNDAR Y FIABLE - CÓDIGO: AUTH-REBUILD-FINAL-V2**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
 - **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `CHANGELOG.md`.
@@ -125,7 +127,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Refuerzo del Auth Guard:** Se ha mejorado el hook `useAuthGuard.ts` para que, en caso de detectar un usuario sin los permisos necesarios, cierre la sesión activamente (`signOut`) antes de redirigir, evitando cualquier bucle de autenticación y asegurando un estado limpio.
   - **Integridad y Estabilidad:** Este cambio masivo devuelve el sistema de autorización a un estado estable, predecible y alineado con las mejores prácticas de Firebase, resolviendo de una vez por todas el problema de acceso y eliminando las soluciones de emergencia que han resultado ser fallidas y frustrantes.
 
-### **121. FIX: REESTRUCTURACIÓN FINAL DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-REBUILD-V1**
+### **131. FIX: REESTRUCTURACIÓN FINAL DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-REBUILD-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 13:00 (CET)
 - **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `CHANGELOG.md`.
@@ -137,7 +139,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
     - **Refuerzo del Auth Guard:** Se ha mejorado el hook `useAuthGuard.ts` para que, en caso de detectar un usuario sin los permisos necesarios, cierre la sesión activamente (`signOut`) antes de redirigir, evitando cualquier bucle de autenticación.
   - **Integridad y Estabilidad:** Este cambio masivo devuelve el sistema de autorización a un estado estable, predecible y alineado con las mejores prácticas de Firebase, resolviendo de una vez por todas el problema de acceso y eliminando las complejas y fallidas soluciones de emergencia.
 
-### **120. FIX: SOLUCIÓN DEFINITIVA Y ROBUSTA A PROBLEMA DE ACCESO DENEGADO - CÓDIGO: AUTH-MASTER-FIX-V1**
+### **130. FIX: SOLUCIÓN DEFINITIVA Y ROBUSTA A PROBLEMA DE ACCESO DENEGADO - CÓDIGO: AUTH-MASTER-FIX-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 12:00 (CET)
 - **Módulos Afectados:** `src/functions/src/index.ts`, `src/hooks/useAuthGuard.ts`, `src/app/admin/seed/page.tsx`, `CHANGELOG.md`.
@@ -149,7 +151,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Refuerzo del Frontend (`useAuthGuard`):** Se ha mejorado el hook `useAuthGuard` para que, en caso de detectar un usuario sin los permisos necesarios, cierre activamente la sesión (`signOut`) antes de redirigir a la página de login. Esto previene cualquier bucle de autenticación y asegura un estado limpio.
   - **Integridad y Control:** Este cambio estructural elimina la dependencia de disparadores automáticos para una tarea crítica como la autorización, otorgando un control directo y fiable sobre la gestión de roles de administrador y resolviendo de una vez por todas el problema de acceso.
 
-### **119. FIX: SOLUCIÓN DEFINITIVA A PÉRDIDA DE DATOS AL GUARDAR CLIENTE - CÓDIGO: FIX-SAVE-DEEPMERGE-V1**
+### **129. FIX: SOLUCIÓN DEFINITIVA A PÉRDIDA DE DATOS AL GUARDAR CLIENTE - CÓDIGO: FIX-SAVE-DEEPMERGE-V1**
 
 - **Fecha y Hora:** 19 de Septiembre de 2025, 16:00 (CET)
 - **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `CHANGELOG.md`.
