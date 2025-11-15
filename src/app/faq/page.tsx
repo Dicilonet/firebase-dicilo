@@ -1,3 +1,4 @@
+
 // src/app/faq/page.tsx
 'use client';
 import React from 'react';
@@ -15,7 +16,10 @@ import Footer from '@/components/footer';
 export default function FaqPage() {
   const { t } = useTranslation('faq');
 
-  const faqItems = [{ key: 'q1' }];
+  // Generate an array of keys from q1 to q22
+  const faqItems = Array.from({ length: 22 }, (_, i) => ({
+    key: `q${i + 1}`,
+  }));
 
   return (
     <>
@@ -32,20 +36,27 @@ export default function FaqPage() {
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">
-                {faqItems.map((item, index) => (
-                  <AccordionItem value={`item-${index}`} key={index}>
-                    <AccordionTrigger className="text-left font-semibold">
-                      {t(`${item.key}.question`)}
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-4 text-muted-foreground">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: t(`${item.key}.answer`),
-                        }}
-                      />
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
+                {faqItems.map((item, index) => {
+                  const question = t(`${item.key}.question`);
+                  const answer = t(`${item.key}.answer`);
+                  // Do not render if translation is missing
+                  if (question === `${item.key}.question`) return null;
+
+                  return (
+                    <AccordionItem value={`item-${index}`} key={index}>
+                      <AccordionTrigger className="text-left font-semibold">
+                        {question}
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 text-muted-foreground">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: answer,
+                          }}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
               </Accordion>
             </CardContent>
           </Card>

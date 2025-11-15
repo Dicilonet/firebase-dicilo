@@ -7,11 +7,11 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **143. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "FAQ" - CÓDIGO: I18N-FAQ-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 13:30 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/locales/de/faq.json`, `src/locales/en/faq.json`, `src/locales/es/faq.json`, `src/app/faq/page.tsx`, `CHANGELOG.md`.
 - **Descripción del Cambio:**
-  - **Análisis del Problema:** La página de "FAQ" (`/faq`) mostraba las claves de traducción en bruto (ej. `pageTitle`) en lugar del texto traducido, porque el archivo de recursos `faq.json` no estaba siendo registrado en la configuración de `i18next`.
-  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `faq.json` para los idiomas alemán, inglés y español al objeto `resources`.
-  - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página de preguntas frecuentes, mostrando el texto correcto en la interfaz de usuario.
+  - **Análisis del Problema:** La página de "FAQ" (`/faq`) mostraba las claves de traducción en bruto (ej. `pageTitle`) en lugar del texto traducido, porque el archivo de recursos `faq.json` no estaba siendo registrado en la configuración de `i18next`. Además, el contenido de las FAQs estaba desactualizado.
+  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `faq.json`. Se ha actualizado el contenido de los archivos `faq.json` en los tres idiomas con la lista completa de 22 preguntas y respuestas. Se ha modificado el componente `src/app/faq/page.tsx` para renderizar dinámicamente todas las preguntas y respuestas.
+  - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página de preguntas frecuentes, mostrando el contenido actualizado y correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
 ### **142. FIX: CORRECCIÓN DE INFORMACIÓN LEGAL EN PÁGINA "DATENSCHUTZ" - CÓDIGO: LEGAL-PRIVACY-UPDATE-V1**
