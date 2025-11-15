@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **134. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
+- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó que la página de planes (`/planes`) mostraba las claves de traducción sin procesar (ej. `plans_title`) en lugar del texto traducido. La causa fue que la configuración de `i18next` en `src/i18n.ts` no estaba cargando los archivos de recursos de traducción necesarios (`pricing_page.json`) para esa sección de la aplicación.
+  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y registrar correctamente los archivos `pricing_page.json` para cada uno de los idiomas soportados (de, en, es) dentro del objeto de recursos de `i18next`.
+  - **Resultado:** Este cambio asegura que el sistema de internacionalización ahora tiene acceso a las traducciones específicas de la página de precios, resolviendo el error y mostrando el contenido correcto en la interfaz de usuario.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
 ### **133. REFACTOR: REESTRUCTURACIÓN Y ESTABILIZACIÓN DEL SISTEMA DE TRADUCCIONES - CÓDIGO: I18N-STABLE-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 19:00 (CET)
