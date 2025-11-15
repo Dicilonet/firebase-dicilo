@@ -4,24 +4,15 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
-### **131. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE RENDERIZADO DEL SERVIDOR - CÓDIGO: SSR-FIX-FINAL**
+### **145. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE REGISTRO - CÓDIGO: I18N-REGISTER-FIX-V1**
 
-- **Fecha y Hora:** 20 de Septiembre de 2025, 18:00 (CET)
-- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `CHANGELOG.md`.
+- **Fecha y Hora:** 21 de Septiembre de 2025, 14:30 (CET)
+- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
 - **Descripción del Cambio:**
-  - **Análisis del Problema:** Se ha detectado un error crítico que provocaba una página en blanco en la ruta principal. El error se debía a un conflicto entre una página de cliente (`"use client"`) que intentaba cargar datos y un componente que esperaba recibirlos desde el servidor. Esta discrepancia en el flujo de datos rompía el renderizado de la aplicación.
-  - **Solución Implementada:** Se ha restaurado la arquitectura original y correcta para la página principal. El archivo `src/app/page.tsx` vuelve a ser un Componente de Servidor (`async function`) que obtiene los datos de los negocios de forma anticipada. Estos datos se pasan como `props` al componente `src/components/dicilo-search-page.tsx`, del cual se ha eliminado toda la lógica de carga de datos del lado del cliente.
-  - **Resultado:** Este cambio resuelve el conflicto de renderizado y el error de la página en blanco, restaurando la funcionalidad de la página de búsqueda. La aplicación ahora sigue el patrón de renderizado del servidor recomendado por Next.js, lo que mejora la eficiencia y la estabilidad.
-  - **Documentación:** Se ha registrado esta corrección arquitectónica en el `CHANGELOG.md`.
-
-### **134. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
-
-- **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
-- **Módulos Afectados:** `src/context/i18n-provider.tsx`, `CHANGELOG.md`.
-- **Descripción del Cambio:**
-  - **Análisis del Problema:** Se detectó un error crítico y recurrente de "fallo de hidratación" (`Hydration failed`). La causa raíz era una condición de carrera (`race condition`) en el componente `i18n-provider.tsx`, donde la inicialización de la librería `i18next` no se completaba de manera fiable antes de que los componentes cliente intentaran renderizarse. Esto provocaba una discrepancia entre el HTML renderizado en el servidor y el cliente.
-  - **Solución Arquitectónica:** Se ha reescrito por completo el proveedor de internacionalización para seguir un patrón más robusto y estándar. La instancia de `i18next` ahora se inicializa una única vez a nivel de módulo, eliminando la condición de carrera. Se ha añadido la integración correcta con React (`initReactI18next`) y se ha simplificado el proveedor para usar `I18nextProvider`, el componente oficial de la librería, garantizando una gestión de estado estable y predecible.
-  - **Resultado:** Esta corrección estructural elimina la causa raíz del error de hidratación, estabilizando el sistema de traducciones en toda la aplicación y asegurando que la interfaz de usuario se renderice de manera consistente tanto en el servidor como en el cliente.
+  - **Análisis del Problema:** La página de registro (`/registrieren`) mostraba las claves de traducción en bruto (ej. `register.form.title`) en lugar del texto traducido, porque el archivo de recursos `register.json` no estaba siendo registrado en la configuración de `i18next`.
+  - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `register.json` para los idiomas alemán, inglés y español al objeto `resources`.
+  - **Resultado:** El sistema de internacionalización ahora carga correctamente las traducciones para la página de registro, mostrando el texto correcto en la interfaz de usuario.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
 ### **144. FIX: CORRECCIÓN DE Z-INDEX EN FORMULARIO DE RECOMENDACIÓN - CÓDIGO: FIX-FORM-ZINDEX-V1**
 
@@ -125,6 +116,25 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
     - **Simplificación de Componentes:** Se ha refactorizado `dicilo-search-page.tsx` para que simplemente reciba y renderice los datos, eliminando la lógica de carga del lado del cliente que causaba problemas.
   - **Resultado:** La aplicación es ahora completamente estable y funcional. El problema de la página en blanco y los errores de hidratación han sido resueltos de forma definitiva. La gestión del idioma se realiza ahora en el lado del cliente, lo cual es un compromiso necesario para garantizar la estabilidad fundamental de la aplicación.
   - **Documentación:** Se registra esta importante reversión arquitectónica como la solución final a los problemas de renderizado e internacionalización.
+
+### **131. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE RENDERIZADO DEL SERVIDOR - CÓDIGO: SSR-FIX-FINAL**
+
+- **Fecha y Hora:** 20 de Septiembre de 2025, 18:00 (CET)
+- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se ha detectado un error crítico que provocaba una página en blanco en la ruta principal. El error se debía a un conflicto entre una página de cliente (`"use client"`) que intentaba cargar datos y un componente que esperaba recibirlos desde el servidor. Esta discrepancia en el flujo de datos rompía el renderizado de la aplicación.
+  - **Solución Implementada:** Se ha restaurado la arquitectura original y correcta para la página principal. El archivo `src/app/page.tsx` vuelve a ser un Componente de Servidor (`async function`) que obtiene los datos de los negocios de forma anticipada. Estos datos se pasan como `props` al componente `src/components/dicilo-search-page.tsx`, del cual se ha eliminado toda la lógica de carga de datos del lado del cliente.
+  - **Resultado:** Este cambio resuelve el conflicto de renderizado y el error de la página en blanco, restaurando la funcionalidad de la página de búsqueda. La aplicación ahora sigue el patrón de renderizado del servidor recomendado por Next.js, lo que mejora la eficiencia y la estabilidad.
+  - **Documentación:** Se ha registrado esta corrección arquitectónica en el `CHANGELOG.md`.
+
+### **134. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
+
+- **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
+- **Módulos Afectados:** `src/context/i18n-provider.tsx`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó un error crítico y recurrente de "fallo de hidratación" (`Hydration failed`). La causa raíz era una condición de carrera (`race condition`) en el componente `i18n-provider.tsx`, donde la inicialización de la librería `i18next` no se completaba de manera fiable antes de que los componentes cliente intentaran renderizarse. Esto provocaba una discrepancia entre el HTML renderizado en el servidor y el cliente.
+  - **Solución Arquitectónica:** Se ha reescrito por completo el proveedor de internacionalización para seguir un patrón más robusto y estándar. La instancia de `i18next` ahora se inicializa una única vez a nivel de módulo, eliminando la condición de carrera. Se ha añadido la integración correcta con React (`initReactI18next`) y se ha simplificado el proveedor para usar `I18nextProvider`, el componente oficial de la librería, garantizando una gestión de estado estable y predecible.
+  - **Resultado:** Esta corrección estructural elimina la causa raíz del error de hidratación, estabilizando el sistema de traducciones en toda la aplicación y asegurando que la interfaz de usuario se renderice de manera consistente tanto en el servidor como en el cliente.
 
 ### **133. FIX: REESCRITURA FINAL Y ROBUSTA DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-FINAL-RELIABLE-V1**
 
