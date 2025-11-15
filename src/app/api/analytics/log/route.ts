@@ -1,44 +1,48 @@
 // src/app/api/analytics/log/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { app } from '@/lib/firebase';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { getApps, initializeApp, cert } from 'firebase-admin/app';
 import { z } from 'zod';
 
-const db = getFirestore(app);
+// Initialize Firebase Admin SDK
+function initializeFirebaseAdmin() {
+  if (getApps().length > 0) {
+    return;
+  }
+  initializeApp();
+}
 
-// Esquema para validar los eventos entrantes
+initializeFirebaseAdmin();
+const db = getFirestore();
+
+// Schema for validating incoming events
 const eventSchema = z.object({
   type: z.enum(['search', 'cardClick', 'popupClick']),
   businessId: z.string().optional(),
   businessName: z.string().optional(),
   searchQuery: z.string().optional(),
   resultsCount: z.number().optional(),
-  clickedElement: z.string().optional(), // p.ej. 'website', 'offer', 'map'
+  clickedElement: z.string().optional(), // e.g., 'website', 'offer', 'map'
 });
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // 1. Validar los datos del evento
+    // 1. Validate the event data
     const validatedData = eventSchema.parse(body);
 
-    // 2. Preparar el documento para Firestore
+    // 2. Prepare the document for Firestore
     const eventData = {
       ...validatedData,
-      timestamp: serverTimestamp(), // Usar el timestamp del servidor para consistencia
+      timestamp: Timestamp.now(), // Use server-side timestamp
       userAgent: request.headers.get('user-agent') || 'Unknown',
-      ip: request.headers.get('x-forwarded-for') || request.ip || 'Unknown', // Capturar IP si es posible
+      ip: request.headers.get('x-forwarded-for') || request.ip || 'Unknown',
     };
 
-    // 3. Guardar el evento en la colección 'analyticsEvents'
-    await addDoc(collection(db, 'analyticsEvents'), eventData);
+    // 3. Save the event in the 'analyticsEvents' collection
+    await db.collection('analyticsEvents').add(eventData);
 
     return NextResponse.json(
       { success: true, message: 'Event logged.' },
