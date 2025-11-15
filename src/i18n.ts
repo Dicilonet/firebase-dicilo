@@ -16,6 +16,9 @@ import pricing_page_es from './locales/es/pricing_page.json';
 import about_de from './locales/de/about.json';
 import about_en from './locales/en/about.json';
 import about_es from './locales/es/about.json';
+import directory_de from './locales/de/directory.json';
+import directory_en from './locales/en/directory.json';
+import directory_es from './locales/es/directory.json';
 
 const resources = {
   de: {
@@ -23,18 +26,21 @@ const resources = {
     admin: admin_de,
     pricing_page: pricing_page_de,
     about: about_de,
+    directory: directory_de,
   },
   en: {
     common: common_en,
     admin: admin_en,
     pricing_page: pricing_page_en,
     about: about_en,
+    directory: directory_en,
   },
   es: {
     common: common_es,
     admin: admin_es,
     pricing_page: pricing_page_es,
     about: about_es,
+    directory: directory_es,
   },
 };
 

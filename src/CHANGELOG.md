@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **136. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 11:00 (CET)
+- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Al igual que en las páginas anteriores, la página del directorio (`/verzeichnis`) mostraba las claves de traducción (`title`, `description`) en lugar del texto real. La causa era que el archivo `directory.json` no estaba siendo registrado en la configuración de `i18next`.
+  - **Solución Implementada:** Se ha actualizado el archivo `src/i18n.ts` para importar y registrar los archivos de traducción `directory.json` para alemán, inglés y español.
+  - **Resultado:** El sistema de internacionalización ahora puede resolver las traducciones para la página del directorio, mostrando el contenido correctamente en la interfaz.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
 ### **135. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:30 (CET)
@@ -36,19 +46,6 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
     - **Simplificación de Componentes:** Se ha refactorizado `dicilo-search-page.tsx` para que simplemente reciba y renderice los datos, eliminando la lógica de carga del lado del cliente que causaba problemas.
   - **Resultado:** La aplicación es ahora completamente estable y funcional. El problema de la página en blanco y los errores de hidratación han sido resueltos de forma definitiva. La gestión del idioma se realiza ahora en el lado del cliente, lo cual es un compromiso necesario para garantizar la estabilidad fundamental de la aplicación.
   - **Documentación:** Se registra esta importante reversión arquitectónica como la solución final a los problemas de renderizado e internacionalización.
-
-### **132. DOCS: ANÁLISIS Y DOCUMENTACIÓN DE REVERSIÓN ARQUITECTÓNICA - CÓDIGO: I18N-ROLLBACK-DOC**
-
-- **Fecha y Hora:** 20 de Septiembre de 2025, 18:30 (CET)
-- **Módulos Afectados:** `src/CHANGELOG.md`, `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `src/middleware.ts` (eliminado).
-- **Descripción del Cambio:**
-  - **Análisis del Problema Crítico:** Se realizó un análisis exhaustivo del error de "página en blanco". La causa raíz fue un conflicto irresoluble entre la arquitectura de enrutamiento por idioma (`src/app/[lang]`) y la página raíz (`src/app/page.tsx`), exacerbado por una lógica de carga de datos inconsistente entre el servidor y el cliente. Esta arquitectura inestable fue la fuente de los errores en cascada.
-  - **Solución Implementada (Reversión Controlada):** Para restaurar la estabilidad fundamental de la aplicación, se tomó la decisión de revertir la arquitectura de internacionalización a un modelo más simple y robusto.
-    - **Eliminación de Rutas de Idioma:** Se eliminó el directorio `src/app/[lang]` y el archivo `src/middleware.ts`. Esto elimina el enrutamiento basado en la ruta URL (`/de`, `/en`) que causaba los conflictos.
-    - **Restauración de `page.tsx`:** El archivo `src/app/page.tsx` vuelve a ser el único punto de entrada, ahora como un Componente de Servidor que carga los datos de los negocios de forma anticipada y los pasa al cliente.
-    - **Simplificación de `dicilo-search-page.tsx`:** Se eliminó la lógica de carga de datos del lado del cliente de este componente, que ahora simplemente recibe y renderiza los datos.
-  - **Consecuencias y Pasos Futuros:** La aplicación es ahora estable y funcional. La consecuencia negativa es la pérdida de URLs específicas por idioma, ya que la internacionalización ahora se gestiona únicamente en el cliente. Esto se considera un paso atrás necesario para poder reconstruir sobre una base sólida.
-  - **Documentación:** Se registra esta reversión arquitectónica como la solución definitiva al problema de la página en blanco.
 
 ### **124. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
 
