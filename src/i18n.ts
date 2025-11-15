@@ -10,19 +10,25 @@ import common_es from './locales/es/common.json';
 import admin_de from './locales/de/admin.json';
 import admin_en from './locales/en/admin.json';
 import admin_es from './locales/es/admin.json';
+import pricing_page_de from './locales/de/pricing_page.json';
+import pricing_page_en from './locales/en/pricing_page.json';
+import pricing_page_es from './locales/es/pricing_page.json';
 
 const resources = {
   de: {
     common: common_de,
     admin: admin_de,
+    pricing_page: pricing_page_de,
   },
   en: {
     common: common_en,
     admin: admin_en,
+    pricing_page: pricing_page_en,
   },
   es: {
     common: common_es,
     admin: admin_es,
+    pricing_page: pricing_page_es,
   },
 };
 
