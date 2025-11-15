@@ -69,18 +69,18 @@ export function RegistrationForm() {
       });
 
       if (!response.ok) {
-        throw new Error(t('submitError'));
+        throw new Error(t('register.submitError'));
       }
 
       toast({
-        title: t('successTitle'),
-        description: t('successDescription'),
+        title: t('register.successTitle'),
+        description: t('register.successDescription'),
       });
       reset();
     } catch (error: any) {
       toast({
-        title: t('errorTitle'),
-        description: error.message || t('submitError'),
+        title: t('register.errorTitle'),
+        description: error.message || t('register.submitError'),
         variant: 'destructive',
       });
     }
@@ -91,7 +91,7 @@ export function RegistrationForm() {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="firstName">{t('fields.firstName')}</Label>
+            <Label htmlFor="firstName">{t('register.fields.firstName')}</Label>
             <Input id="firstName" {...register('firstName')} />
             {errors.firstName && (
               <p className="text-sm text-destructive">
@@ -100,7 +100,7 @@ export function RegistrationForm() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName">{t('fields.lastName')}</Label>
+            <Label htmlFor="lastName">{t('register.fields.lastName')}</Label>
             <Input id="lastName" {...register('lastName')} />
             {errors.lastName && (
               <p className="text-sm text-destructive">
@@ -111,7 +111,7 @@ export function RegistrationForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">{t('fields.email')}</Label>
+          <Label htmlFor="email">{t('register.fields.email')}</Label>
           <Input id="email" type="email" {...register('email')} />
           {errors.email && (
             <p className="text-sm text-destructive">
@@ -121,12 +121,12 @@ export function RegistrationForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="whatsapp">{t('fields.whatsapp')}</Label>
+          <Label htmlFor="whatsapp">{t('register.fields.whatsapp')}</Label>
           <Input id="whatsapp" {...register('whatsapp')} />
         </div>
 
         <div className="space-y-3">
-          <Label>{t('fields.registrationType')}</Label>
+          <Label>{t('register.fields.registrationType')}</Label>
           <Controller
             name="registrationType"
             control={control}
@@ -146,7 +146,7 @@ export function RegistrationForm() {
                       id={option.value}
                       className="border-muted-foreground text-primary"
                     />
-                    <span>{t(option.labelKey)}</span>
+                    <span>{t(`register.${option.labelKey}`)}</span>
                   </Label>
                 ))}
               </RadioGroup>
@@ -164,7 +164,7 @@ export function RegistrationForm() {
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            t('submitButton')
+            t('register.submitButton')
           )}
         </Button>
       </CardFooter>
