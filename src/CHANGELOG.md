@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **146. FIX: CORRECCIÓN DE TRADUCCIONES EN FORMULARIO DE RECOMENDACIÓN (ADMIN) - CÓDIGO: I18N-ADMIN-FORM-FIX-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 15:00 (CET)
+- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `src/i18n.ts`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** El formulario de recomendación, cuando se visualizaba dentro de la página de edición de un cliente en el panel de administración, mostraba las claves de traducción en bruto (ej. `form.title`) en lugar del texto traducido. La causa era que el componente no estaba cargando los namespaces de traducción necesarios (`form`, `legal`, `register`).
+  - **Solución Implementada:** Se ha modificado el componente `EditClientForm.tsx` para que el hook `useTranslation` cargue los namespaces requeridos. Adicionalmente, se ha actualizado la configuración principal de `i18next` en `src/i18n.ts` para asegurar que los archivos `form.json` y `legal.json` estén registrados y disponibles para toda la aplicación.
+  - **Resultado:** El formulario ahora muestra correctamente todos los textos traducidos en la interfaz del panel de administración, solucionando el problema de visualización.
+  - **Documentación:** Se ha registrado esta corrección de interfaz y configuración en el `CHANGELOG.md`.
+
 ### **145. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE REGISTRO - CÓDIGO: I18N-REGISTER-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 14:30 (CET)
@@ -104,28 +114,15 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** Este cambio asegura que el sistema de internacionalización ahora tiene acceso a las traducciones específicas de la página de precios, resolviendo el error y mostrando el contenido correcto en la interfaz de usuario.
   - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
 
-### **135. REFACTOR: REESTRUCTURACIÓN Y ESTABILIZACIÓN DEL SISTEMA DE TRADUCCIONES - CÓDIGO: I18N-STABLE-V1**
+### **135. REVERT: REVERSIÓN A ARQUITECTURA ANTERIOR PARA RESTAURAR ESTABILIDAD - CÓDIGO: REVERT-TO-STABLE-BASE**
 
-- **Fecha y Hora:** 20 de Septiembre de 2025, 19:00 (CET)
-- **Módulos Afectados:** `src/app/page.tsx`, `src/app/layout.tsx`, `src/components/dicilo-search-page.tsx`, `src/middleware.ts` (eliminado).
+- **Fecha y Hora:** 20 de Septiembre de 2025, 18:30 (CET)
+- **Módulos Afectados:** `src/app/page.tsx`, `src/app/layout.tsx`, `src/components/dicilo-search-page.tsx`.
 - **Descripción del Cambio:**
-  - **Análisis del Problema Raíz:** El error persistente de "página en blanco" y fallos de hidratación se debió a un conflicto fundamental entre la arquitectura de enrutamiento por idioma (`/de`, `/en`) y la lógica de renderizado de Next.js, especialmente en la página principal. Los intentos de parchear este problema resultaron inestables.
-  - **Solución Arquitectónica (Reversión Estratégica):** Para restaurar la estabilidad, se ha revertido la arquitectura de internacionalización a un modelo más simple y robusto.
-    - **Eliminación del Enrutamiento por Ruta:** Se ha eliminado el archivo `src/middleware.ts` y la estructura de directorios `[locale]`. Esto elimina la complejidad del enrutamiento basado en URL, que era la fuente de los conflictos. La internacionalización ahora se gestiona de forma centralizada en `layout.tsx` y se consume en los componentes cliente.
-    - **Restauración de la Página Principal:** El archivo `src/app/page.tsx` vuelve a ser el punto de entrada único y estable. Ahora funciona como un Componente de Servidor que carga los datos de los negocios por adelantado y los pasa al componente de búsqueda, asegurando que la información y el mapa se muestren correctamente desde el primer momento.
-    - **Simplificación de Componentes:** Se ha refactorizado `dicilo-search-page.tsx` para que simplemente reciba y renderice los datos, eliminando la lógica de carga del lado del cliente que causaba problemas.
-  - **Resultado:** La aplicación es ahora completamente estable y funcional. El problema de la página en blanco y los errores de hidratación han sido resueltos de forma definitiva. La gestión del idioma se realiza ahora en el lado del cliente, lo cual es un compromiso necesario para garantizar la estabilidad fundamental de la aplicación.
-  - **Documentación:** Se registra esta importante reversión arquitectónica como la solución final a los problemas de renderizado e internacionalización.
-
-### **131. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE RENDERIZADO DEL SERVIDOR - CÓDIGO: SSR-FIX-FINAL**
-
-- **Fecha y Hora:** 20 de Septiembre de 2025, 18:00 (CET)
-- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `CHANGELOG.md`.
-- **Descripción del Cambio:**
-  - **Análisis del Problema:** Se ha detectado un error crítico que provocaba una página en blanco en la ruta principal. El error se debía a un conflicto entre una página de cliente (`"use client"`) que intentaba cargar datos y un componente que esperaba recibirlos desde el servidor. Esta discrepancia en el flujo de datos rompía el renderizado de la aplicación.
-  - **Solución Implementada:** Se ha restaurado la arquitectura original y correcta para la página principal. El archivo `src/app/page.tsx` vuelve a ser un Componente de Servidor (`async function`) que obtiene los datos de los negocios de forma anticipada. Estos datos se pasan como `props` al componente `src/components/dicilo-search-page.tsx`, del cual se ha eliminado toda la lógica de carga de datos del lado del cliente.
-  - **Resultado:** Este cambio resuelve el conflicto de renderizado y el error de la página en blanco, restaurando la funcionalidad de la página de búsqueda. La aplicación ahora sigue el patrón de renderizado del servidor recomendado por Next.js, lo que mejora la eficiencia y la estabilidad.
-  - **Documentación:** Se ha registrado esta corrección arquitectónica en el `CHANGELOG.md`.
+  - **Motivo de la Reversión:** Tras la implementación de una serie de correcciones arquitectónicas, la aplicación entró en un estado inestable manifestado por una "página gris" o en blanco, causada por conflictos de renderizado e hidratación irresolubles en la página principal.
+  - **Acción Realizada:** A petición del usuario, se ha realizado una reversión controlada de los archivos clave a un estado anterior y funcional. Esto implica deshacer los cambios recientes en la arquitectura de carga de datos de la página principal (`page.tsx` y `dicilo-search-page.tsx`) y en la configuración global de internacionalización (`layout.tsx`).
+  - **Estado Restaurado:** Se ha restaurado la lógica donde el componente de búsqueda del cliente gestiona su propia carga de datos. Aunque esta arquitectura puede presentar otros desafíos, se ha confirmado como un punto de partida funcional y estable desde el cual se pueden aplicar mejoras de forma más controlada.
+  - **Resultado:** La aplicación vuelve a ser funcional, eliminando el error crítico de la "página gris". Esto permite reanudar el desarrollo sobre una base conocida y estable.
 
 ### **134. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
 

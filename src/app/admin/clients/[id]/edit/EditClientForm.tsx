@@ -120,7 +120,7 @@ const RecommendationFormForClient = ({
   products: { name: string; id?: string }[];
   clientId: string;
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['form', 'legal', 'register']);
   const { toast } = useToast();
 
   const {

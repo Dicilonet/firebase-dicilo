@@ -31,6 +31,12 @@ import faq_es from './locales/es/faq.json';
 import register_de from './locales/de/register.json';
 import register_en from './locales/en/register.json';
 import register_es from './locales/es/register.json';
+import form_de from './locales/de/form.json';
+import form_en from './locales/en/form.json';
+import form_es from './locales/es/form.json';
+import legal_de from './locales/de/legal.json';
+import legal_en from './locales/en/legal.json';
+import legal_es from './locales/es/legal.json';
 
 const resources = {
   de: {
@@ -43,6 +49,8 @@ const resources = {
     privacy: privacy_de,
     faq: faq_de,
     register: register_de,
+    form: form_de,
+    legal: legal_de,
   },
   en: {
     common: common_en,
@@ -54,6 +62,8 @@ const resources = {
     privacy: privacy_en,
     faq: faq_en,
     register: register_en,
+    form: form_en,
+    legal: legal_en,
   },
   es: {
     common: common_es,
@@ -65,6 +75,8 @@ const resources = {
     privacy: privacy_es,
     faq: faq_es,
     register: register_es,
+    form: form_es,
+    legal: legal_es,
   },
 };
 
