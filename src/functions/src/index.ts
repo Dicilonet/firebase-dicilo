@@ -432,10 +432,14 @@ export const seedDatabaseCallable = onCall(
 export const promoteToClient = onCall(
   { region: 'europe-west1' },
   async (request) => {
-    if (!request.auth || request.auth.token.role !== 'superadmin') {
+    if (
+      !request.auth ||
+      (request.auth.token.role !== 'admin' &&
+        request.auth.token.role !== 'superadmin')
+    ) {
       throw new HttpsError(
         'permission-denied',
-        'Only superadmins can perform this action.'
+        'Only admins can perform this action.'
       );
     }
 
@@ -484,8 +488,7 @@ export const promoteToClient = onCall(
         clientType: clientType,
       };
 
-      const clientRef = db.collection('clients').doc();
-      await clientRef.set(clientData);
+      const clientRef = await addDoc(collection(db, 'clients'), clientData);
 
       return {
         success: true,
