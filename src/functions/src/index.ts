@@ -9,7 +9,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import axios from 'axios';
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { onCall, HttpsError } from 'firebase-functions/v2/httpsa';
 import * as logger from 'firebase-functions/logger';
 import { Lang, getEmailI18n, render } from './i18n';
 import { sendMail } from './email';
@@ -439,7 +439,7 @@ export const promoteToClient = onCall(
     ) {
       throw new HttpsError(
         'permission-denied',
-        'Only admins can perform this action.'
+        'Only admins or superadmins can perform this action.'
       );
     }
 
