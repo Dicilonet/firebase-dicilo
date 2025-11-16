@@ -9,7 +9,7 @@ service cloud.firestore {
     }
     match /clients/{document=**} {
       allow read: if true;
-      allow write: if request.auth.token.admin == true;
+      allow write: if request.auth.token.role == 'admin' || request.auth.token.role == 'superadmin';
     }
     match /pricing_plans/{document=**} {
       allow read: if true;

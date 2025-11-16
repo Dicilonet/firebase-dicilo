@@ -4,6 +4,28 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **154. FIX: CORRECCIÓN DE REGLA DE SEGURIDAD PARA PERMITIR EDICIÓN DE CLIENTES POR ADMINS - CÓDIGO: FIX-CLIENT-EDIT-PERMS-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 09:45 (CET)
+- **Módulos Afectados:** `firestore.rules`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó un error persistente de "permisos insuficientes" al intentar guardar cambios en un cliente desde el panel de administración. La causa era que la regla de seguridad de Firestore para la colección `clients` solo permitía escrituras si `request.auth.token.admin == true`, pero no verificaba el rol específico de `admin`.
+  - **Solución Implementada:** Se ha modificado la regla en `firestore.rules` para la ruta `match /clients/{document=**}`. La nueva regla, `allow write: if request.auth.token.role == 'admin' || request.auth.token.role == 'superadmin';`, permite explícitamente que tanto los administradores como los superadministradores puedan editar los documentos de los clientes.
+  - **Resultado:** Este cambio soluciona el error de permisos y permite que los administradores puedan guardar cambios en los clientes sin problemas, restaurando la funcionalidad principal de gestión de clientes.
+  - **Documentación:** Se ha registrado esta corrección crítica de seguridad en el `CHANGELOG.md`.
+
+### **153. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESAS - CÓDIGO: FIX-PROMOTE-I18N-V2**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 09:30 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/functions/package.json`, `src/app/admin/businesses/[id]/edit/page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectaron dos problemas: 1) La función "Promover a Cliente" fallaba con un error interno porque la Cloud Function `promoteToClient` no tenía acceso a la librería `lodash` en el backend y tenía permisos insuficientes para el rol de 'admin'. 2) Las etiquetas del formulario de edición de empresas mostraban claves de traducción en bruto.
+  - **Solución Implementada:** 
+    1. Se ha añadido `lodash` como dependencia en `functions/package.json` y se ha importado en `index.ts`. Se ha modificado la validación de la función `promoteToClient` para permitir que tanto `admin` como `superadmin` puedan ejecutarla.
+    2. Se ha modificado el hook `useTranslation` en `src/app/admin/businesses/[id]/edit/page.tsx` para que cargue el espacio de nombres `admin`, permitiendo que las etiquetas del formulario se traduzcan correctamente.
+  - **Resultado:** La funcionalidad de "Promover a Cliente" ha sido restaurada para todos los administradores y la interfaz del formulario de edición de empresas ahora se muestra completamente traducida.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
 ### **152. FIX: CORRECCIÓN DE TRADUCCIONES EN FORMULARIO DE CLIENTES (ADMIN) - CÓDIGO: I18N-ADMIN-CLIENT-FIX-V2**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 09:15 (CET)
@@ -24,7 +46,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El formulario de edición de clientes en el panel de administración ahora se muestra completamente traducido, mejorando la usabilidad y la experiencia del administrador.
   - **Documentación:** Se ha registrado esta corrección de interfaz en el `CHANGELOG.md`.
 
-### **150. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESAS - CÓDIGO: FIX-PROMOTE-I18N-V1**
+### **150. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESas - CÓDIGO: FIX-PROMOTE-I18N-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 16:15 (CET)
 - **Módulos Afectados:** `src/functions/src/index.ts`, `src/app/admin/businesses/[id]/edit/page.tsx`, `src/functions/package.json`.
@@ -248,6 +270,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Análisis del Error:** Se identificó que la causa raíz de la persistente pérdida de datos al guardar un cliente era una estrategia de actualización defectuosa. La función `updateDoc` de Firestore, al recibir un objeto anidado incompleto, reemplazaba el objeto entero en la base de datos, eliminando los sub-campos no modificados.
   - **Solución Arquitectónica (Deep Merge):** Se ha implementado una solución robusta y definitiva. Ahora, la función `onSubmit` primero obtiene el documento original completo desde Firestore. Luego, utiliza la función `_.merge` de `lodash` para realizar una "fusión profunda" (deep merge), combinando de manera inteligente y recursiva los nuevos datos del formulario sobre los datos existentes.
   - **Integridad de Datos Garantizada:** Este enfoque asegura que solo los campos que el usuario ha modificado explícitamente se actualizan, mientras que todos los demás campos, especialmente los anidados, conservan sus valores originales. Se elimina de raíz el riesgo de borrado accidental de datos.
-  - **Documentación:** Se registra esta corrección arquitectónica fundamental en el `CHANGELOG.md` como la solución final al problema de guardado.
+  - **Documentación:** Se ha registrado esta corrección arquitectónica fundamental en el `CHANGELOG.md` como la solución final al problema de guardado.
+
 
 
