@@ -4,6 +4,28 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **151. FIX: CORRECCIÓN DE TRADUCCIONES EN FORMULARIO DE CLIENTES (ADMIN) - CÓDIGO: I18N-ADMIN-CLIENT-FIX-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 09:00 (CET)
+- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó un problema de internacionalización en el formulario de edición de clientes, donde todas las etiquetas y textos descriptivos mostraban las claves de traducción (ej. `admin.clients.tabs.general`) en lugar del texto traducido al idioma correspondiente. La causa era que el hook `useTranslation` se estaba llamando sin especificar el espacio de nombres `admin`.
+  - **Solución Implementada:** Se ha modificado el componente `EditClientForm.tsx` para que el hook `useTranslation` cargue explícitamente el espacio de nombres `admin`. Esto permite que todas las claves de traducción con el prefijo `admin.` se resuelvan correctamente.
+  - **Resultado:** El formulario de edición de clientes en el panel de administración ahora se muestra completamente traducido, mejorando la usabilidad y la experiencia del administrador.
+  - **Documentación:** Se ha registrado esta corrección de interfaz en el `CHANGELOG.md`.
+
+### **150. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESAS - CÓDIGO: FIX-PROMOTE-I18N-V1**
+
+- **Fecha y Hora:** 21 de Septiembre de 2025, 16:15 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/app/admin/businesses/[id]/edit/page.tsx`, `src/functions/package.json`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectaron dos problemas: 1) La función "Promover a Cliente" fallaba con un error interno porque la Cloud Function `promoteToClient` no tenía acceso a la librería `lodash` en el backend. 2) Las etiquetas del formulario de edición de empresas mostraban claves de traducción en bruto (ej. `admin.businesses.fields.name`) en lugar del texto traducido.
+  - **Solución Implementada:** 
+    1. Se ha añadido `lodash` como dependencia en el archivo `package.json` de las Cloud Functions y se ha importado correctamente en `index.ts`. Esto resuelve el error interno y permite que la promoción de empresas a clientes funcione correctamente. Se ajustó también el permiso para que tanto `admin` como `superadmin` puedan ejecutar la acción.
+    2. Se ha modificado el hook `useTranslation` en `src/app/admin/businesses/[id]/edit/page.tsx` para que cargue el espacio de nombres `admin`, permitiendo que las etiquetas del formulario se traduzcan correctamente.
+  - **Resultado:** La funcionalidad de "Promover a Cliente" ha sido restaurada y la interfaz del formulario de edición de empresas ahora se muestra completamente traducida.
+  - **Documentación:** Se ha registrado esta corrección en el `CHANGELOG.md`.
+
 ### **149. FIX: CORRECCIÓN FINAL DE TRADUCCIONES EN FORMULARIO DE REGISTRO (BOTÓN Y MENSAJE) - CÓDIGO: I18N-REGISTER-FINAL-FIX-V2**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 15:45 (CET)
@@ -70,7 +92,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 - **Módulos Afectados:** `src/i18n.ts`, `src/locales/de/faq.json`, `src/locales/en/faq.json`, `src/locales/es/faq.json`, `src/app/faq/page.tsx`, `CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La página de "FAQ" (/faq) mostraba las claves de traducción en bruto y el contenido estaba desactualizado.
-  - **Solución Implementada:** Se ha actualizado el contenido de los archivos `faq.json` en los tres idiomas (alemán, inglés, español) con la lista completa de 22 preguntas y respuestas proporcionadas. Se ha modificado el componente `src/app/faq/page.tsx` para renderizar dinámicamente todas las preguntas y respuestas desde los archivos de traducción. Finalmente, se ha asegurado que `i18next` cargue correctamente el namespace `faq`.
+  - **Solución Implementada:** Se ha actualizado el contenido de los archivos `faq.json` en los tres idiomas (alemán, inglés y español) con la lista completa de 22 preguntas y respuestas proporcionadas. Se ha modificado el componente `src/app/faq/page.tsx` para renderizar dinámicamente todas las preguntas y respuestas desde los archivos de traducción. Finalmente, se ha asegurado que `i18next` cargue correctamente el namespace `faq`.
   - **Resultado:** La página de preguntas frecuentes ahora muestra el contenido completo, actualizado y traducido correctamente, solucionando tanto el problema de visualización como el de contenido obsoleto.
   - **Documentación:** Se ha registrado esta importante actualización de contenido y corrección de i18n en el `CHANGELOG.md`.
 
@@ -217,7 +239,4 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Solución Arquitectónica (Deep Merge):** Se ha implementado una solución robusta y definitiva. Ahora, la función `onSubmit` primero obtiene el documento original completo desde Firestore. Luego, utiliza la función `_.merge` de `lodash` para realizar una "fusión profunda" (deep merge), combinando de manera inteligente y recursiva los nuevos datos del formulario sobre los datos existentes.
   - **Integridad de Datos Garantizada:** Este enfoque asegura que solo los campos que el usuario ha modificado explícitamente se actualizan, mientras que todos los demás campos, especialmente los anidados, conservan sus valores originales. Se elimina de raíz el riesgo de borrado accidental de datos.
   - **Documentación:** Se registra esta corrección arquitectónica fundamental en el `CHANGELOG.md` como la solución final al problema de guardado.
-
-
-
 

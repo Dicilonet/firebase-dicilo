@@ -659,7 +659,7 @@ interface EditClientFormProps {
 }
 
 export default function EditClientForm({ initialData }: EditClientFormProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const db = getFirestore(app);
   const storage = getStorage(app);
   const router = useRouter();
