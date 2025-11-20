@@ -396,10 +396,18 @@ export default function DiciloSearchPage({
                   )}
                 </div>
                 <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  aria-label="Suche per Sprache"
+                >
+                  <Mic className="h-4 w-4" />
+                </Button>
+                <Button
                   onClick={() => setMobileMapVisible(true)}
                   size="icon"
                   variant="outline"
-                  aria-label="Show map"
+                  aria-label="Karte anzeigen"
                   className="md:hidden"
                 >
                   <Map className="h-4 w-4" />
