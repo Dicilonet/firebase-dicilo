@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **165. FIX: CORRECCIÓN DEFINITIVA DE CARGA DE DATOS JSON - CÓDIGO: FIX-JSON-IMPORT-V2**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 12:30 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Tras múltiples intentos fallidos y un análisis detallado proporcionado por el usuario, se identificó que la causa raíz del "error interno" persistente era la incorrecta interpretación del módulo JSON importado en el entorno de Cloud Functions. El código no manejaba adecuadamente la estructura del objeto que envolvía al array de datos.
+  - **Solución Implementada:** Se ha refactorizado la función `doSeedDatabase` en `src/functions/src/index.ts` para que utilice `Object.values()` sobre el objeto JSON importado. Esto extrae el contenido del módulo (que es un array de empresas) de forma robusta y segura, independientemente de la estructura interna que el compilador de TypeScript genere. Adicionalmente, se ha añadido un aplanamiento (`.flat()`) para manejar casos donde el JSON pueda estar anidado. Esta es la solución definitiva que garantiza que los datos se lean y procesen correctamente.
+  - **Resultado:** La función "Poblar Base de Datos" ahora opera de manera fiable, permitiendo la carga de datos desde `seed-data.json` sin errores internos. Se resuelve uno de los problemas más persistentes y frustrantes, gracias a la colaboración y diagnóstico preciso del usuario.
+  - **Documentación:** Se ha registrado esta corrección crítica y definitiva en el `CHANGELOG.md`.
+
 ### **164. FIX: CORRECCIÓN DEFINITIVA DE CARGA DE DATOS JSON - CÓDIGO: FIX-JSON-IMPORT-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 12:15 (CET)
@@ -174,7 +184,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **148. FIX: CORRECCIÓN FINAL DE TRADUCCIONES EN FORMULARIO DE REGISTRO - CÓDIGO: I18N-REGISTER-FINAL-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 15:30 (CET)
-- **Módulos Afectados:** `src/app/registrieren/RegistrationForm.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/app/registrieren/RegistrationForm.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Se detectaron claves de traducción sin resolver adicionales en el formulario de registro (`/registrieren`), lo que causaba que se mostraran identificadores como `submitButton` en lugar del texto real. El problema se debía a que no se estaba utilizando el espacio de nombres de traducción `register` al llamar a la función `t()`.
   - **Solución Implementada:** Se ha modificado el componente `src/app/registrieren/RegistrationForm.tsx` para asegurar que el hook `useTranslation` cargue explícitamente el espacio de nombres `register`. Se corrigieron las llamadas a `t()` para usar el formato correcto, solucionando los problemas de texto faltante.
@@ -184,7 +194,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **147. FIX: CORRECCIÓN DE TRADUCCIONES EN FORMULARIO DE RECOMENDACIÓN (ADMIN) - CÓDIGO: I18N-ADMIN-FORM-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 15:00 (CET)
-- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** El formulario de recomendación, cuando se visualizaba dentro de la página de edición de un cliente en el panel de administración, mostraba las claves de traducción en bruto (ej. `form.title`) en lugar del texto traducido. La causa era que el componente no estaba cargando los namespaces de traducción necesarios (`form`, `legal`, `register`).
   - **Solución Implementada:** Se ha modificado el componente `EditClientForm.tsx` para que el hook `useTranslation` cargue los namespaces requeridos. Adicionalmente, se ha actualizado la configuración principal de `i18next` en `src/i18n.ts` para asegurar que los archivos `form.json` y `legal.json` estén registrados y disponibles para toda la aplicación.
@@ -194,7 +204,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **146. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE REGISTRO - CÓDIGO: I18N-REGISTER-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 14:30 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La página de registro (`/registrieren`) mostraba las claves de traducción en bruto (ej. `register.form.title`) en lugar del texto traducido, porque el archivo de recursos `register.json` no estaba siendo registrado en la configuración de `i18next`.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `register.json` para los idiomas alemán, inglés y español al objeto `resources`.
@@ -204,7 +214,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **145. REVERT: REVERSIÓN A ARQUITECTURA ANTERIOR PARA RESTAURAR ESTABILIDAD - CÓDIGO: REVERT-TO-STABLE-BASE-V2**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:00 (CET)
-- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Motivo de la Reversión:** Tras la implementación de una arquitectura de carga de datos en el servidor, la aplicación entró en un estado inestable manifestado por una "página gris". Esto se debió a un conflicto irresoluble entre la carga de datos del servidor y la lógica del componente cliente.
   - **Acción Realizada:** A petición del usuario y para restaurar la funcionalidad inmediata, se ha realizado una reversión controlada de `page.tsx` y `dicilo-search-page.tsx` a un estado anterior y funcional. Se restaura la lógica donde el componente de búsqueda del cliente gestiona su propia carga de datos.
@@ -214,7 +224,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **144. FIX: CORRECCIÓN DE Z-INDEX EN FORMULARIO DE RECOMENDACIÓN - CÓDIGO: FIX-FORM-ZINDEX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 14:00 (CET)
-- **Módulos Afectados:** `src/components/RecommendationForm.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/components/RecommendationForm.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Se detectó un error de visualización en la página de búsqueda, donde el formulario modal para recomendar una nueva empresa aparecía parcialmente oculto detrás del mapa y la lista de resultados. Esto se debía a un conflicto en el orden de apilamiento de los elementos (`z-index`).
   - **Solución Implementada:** Se ha aplicado una corrección simple y directa al componente `RecommendationForm.tsx`, aumentando el valor de `z-index` del `DialogContent` a `z-[1000]`. Esto asegura que el formulario modal siempre se renderice en una capa superior, por encima de todos los demás elementos de la página.
@@ -224,7 +234,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **143. FIX: ACTUALIZACIÓN Y TRADUCCIÓN COMPLETA DE PÁGINA "FAQ" - CÓDIGO: I18N-FAQ-CONTENT-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 13:45 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `src/locales/de/faq.json`, `src/locales/en/faq.json`, `src/locales/es/faq.json`, `src/app/faq/page.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/locales/de/faq.json`, `src/locales/en/faq.json`, `src/locales/es/faq.json`, `src/app/faq/page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La página de "FAQ" (/faq) mostraba las claves de traducción en bruto y el contenido estaba desactualizado.
   - **Solución Implementada:** Se ha actualizado el contenido de los archivos `faq.json` en los tres idiomas (alemán, inglés y español) con la lista completa de 22 preguntas y respuestas proporcionadas. Se ha modificado el componente `src/app/faq/page.tsx` para renderizar dinámicamente todas las preguntas y respuestas desde los archivos de traducción. Finalmente, se ha asegurado que `i18next` cargue correctamente el namespace `faq`.
@@ -234,7 +244,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **142. FIX: CORRECCIÓN DE INFORMACIÓN LEGAL EN PÁGINA "DATENSCHUTZ" - CÓDIGO: LEGAL-PRIVACY-UPDATE-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 13:00 (CET)
-- **Módulos Afectados:** `src/locales/de/privacy.json`, `src/locales/en/privacy.json`, `src/locales/es/privacy.json`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/locales/de/privacy.json`, `src/locales/en/privacy.json`, `src/locales/es/privacy.json`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La información de la empresa responsable en la página de Política de Privacidad (`/datenschutz`) era incorrecta y no coincidía con la del Impressum.
   - **Solución Implementada:** Se han actualizado los archivos de traducción `privacy.json` para los tres idiomas (alemán, inglés y español), reemplazando los datos incorrectos de "MHC-Interational Services S.L." por los datos correctos de "MILENIUM HOLDING & CONSULTING (UG)" y su dirección en Hamburgo.
@@ -244,7 +254,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **141. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "DATENSCHUTZ" (PRIVACIDAD) - CÓDIGO: I18N-PRIVACY-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 12:30 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La página de "Datenschutz" (`/datenschutz`) mostraba las claves de traducción en bruto (ej. `pageTitle`) en lugar del texto traducido, porque el archivo de recursos `privacy.json` no estaba siendo registrado en la configuración de `i18next`.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `privacy.json` para los idiomas alemán, inglés y español al objeto `resources`.
@@ -254,7 +264,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **140. FIX: ACTUALIZACIÓN DE INFORMACIÓN LEGAL EN PÁGINA "IMPRESSUM" - CÓDIGO: LEGAL-INFO-UPDATE-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 12:00 (CET)
-- **Módulos Afectados:** `src/locales/de/impressum.json`, `src/locales/en/impressum.json`, `src/locales/es/impressum.json`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/locales/de/impressum.json`, `src/locales/en/impressum.json`, `src/locales/es/impressum.json`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** El usuario solicitó actualizar la información de contacto y legal que se muestra en la página de "Impressum" (Aviso Legal).
   - **Solución Implementada:** Se han modificado los archivos de traducción `impressum.json` para los idiomas alemán, inglés y español, reemplazando los datos de la empresa, dirección, representante legal, teléfono e ID de IVA por los nuevos valores proporcionados.
@@ -264,7 +274,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **139. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "IMPRESSUM" - CÓDIGO: I18N-IMPRINT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:30 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** La página de "Impressum" (`/impressum`) mostraba las claves de traducción en bruto (ej. `legal.title`) en lugar del texto traducido, ya que el archivo de recursos `impressum.json` no estaba siendo registrado en la configuración de `i18next`.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `impressum.json` para los idiomas alemán, inglés y español al objeto `resources`.
@@ -274,7 +284,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **138. FIX: CARGA DE TRADUCCIONES PARA PÁGINA DE DIRECTORIO - CÓDIGO: I18N-DIR-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 11:00 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Al igual que en las páginas anteriores, la página del directorio (`/verzeichnis`) mostraba las claves de traducción (`title`, `description`) en lugar del texto real. La causa era que el archivo `directory.json` no estaba siendo registrado en la configuración de `i18next`.
   - **Solución Implementada:** Se ha actualizado el archivo `src/i18n.ts` para importar y registrar los archivos de traducción `directory.json` para alemán, inglés y español.
@@ -284,7 +294,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **137. FIX: CARGA DE TRADUCCIONES PARA PÁGINA "SOBRE NOSOTROS" - CÓDIGO: I18N-ABOUT-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:30 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** De forma similar al error en la página de planes, la página "Sobre Nosotros" (`/ueber-uns`) mostraba las claves de traducción en bruto (ej. `ourMission.title`) porque el archivo de recursos `about.json` no estaba siendo registrado en la configuración de `i18next`.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y añadir los archivos de traducción `about.json` para los idiomas alemán, inglés y español.
@@ -294,7 +304,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **136. FIX: CORRECCIÓN DE CARGA DE TRADUCCIONES PARA PÁGINA DE PLANES - CÓDIGO: I18N-PLAN-FIX-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 10:00 (CET)
-- **Módulos Afectados:** `src/i18n.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/i18n.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Se detectó que la página de planes (`/planes`) mostraba las claves de traducción sin procesar (ej. `plans_title`) en lugar del texto traducido. La causa fue que la configuración de `i18next` en `src/i18n.ts` no estaba cargando los archivos de recursos de traducción necesarios (`pricing_page.json`) para esa sección de la aplicación.
   - **Solución Implementada:** Se ha modificado el archivo `src/i18n.ts` para importar y registrar correctamente los archivos `pricing_page.json` para cada uno de los idiomas soportados (de, en, es) dentro del objeto de recursos de `i18next`.

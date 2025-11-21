@@ -327,30 +327,38 @@ export const consentDecline = functions
 
 const doSeedDatabase = async () => {
   const batch = db.batch();
-  
-  // The JSON is imported directly, TypeScript handles the object creation.
-  // The 'default' key is a common behavior when importing JSON with ES modules.
-  const data = (businessesToSeed as any).default || businessesToSeed;
 
-  if (!Array.isArray(data)) {
-    logger.error('Seed data is not in the expected array format.', data);
-    throw new Error('Seed data is not an array.');
+  // This is the robust way to handle direct JSON imports with varying module structures.
+  const data = Object.values(businessesToSeed);
+
+  if (!Array.isArray(data) || data.length === 0) {
+    logger.error('Seed data is not an array or is empty after processing.', {
+      importedData: businessesToSeed,
+    });
+    throw new Error(
+      'Formato de datos de origen no válido o vacío. Se esperaba un array de objetos.'
+    );
   }
 
-  logger.info(`Found ${data.length} businesses to seed.`);
+  // The imported data is an array of arrays, so we need to flatten it.
+  const businesses = data.flat();
 
-  data.forEach((business: any) => {
+  logger.info(`Found ${businesses.length} businesses to seed.`);
+
+  businesses.forEach((business: any) => {
     // Basic validation to ensure it's a valid business object
     if (business && typeof business === 'object' && business.name) {
       const docRef = db.collection('businesses').doc(); // Auto-generate ID
       batch.set(docRef, business);
+    } else {
+      logger.warn('Skipping invalid business object in seed data:', business);
     }
   });
 
   await batch.commit();
   return {
     success: true,
-    message: `${data.length} businesses from seed-data.json have been seeded.`,
+    message: `${businesses.length} businesses from seed-data.json have been seeded.`,
   };
 };
 
