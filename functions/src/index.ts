@@ -6,7 +6,7 @@
 import * as functions from 'firebase-functions';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
-import { getFirestore, FieldValue, CollectionReference, DocumentData } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import axios from 'axios';
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
@@ -14,7 +14,8 @@ import * as logger from 'firebase-functions/logger';
 import { Lang, getEmailI18n, render } from './i18n';
 import { sendMail } from './email';
 import _ from 'lodash';
-import * as businessesToSeed from './seed-data.json';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Initialize Firebase Admin SDK
 initializeApp();
@@ -325,28 +326,32 @@ export const consentDecline = functions
   .region('europe-west1')
   .https.onRequest((req, res) => handleConsent(req, res, 'declined'));
 
-  const doSeedDatabase = async () => {
-    const batch = db.batch();
-    // The 'businessesToSeed' is an object with a 'default' key containing the array.
-    const data: any[] = (businessesToSeed as any).default || businessesToSeed;
-  
-    if (!Array.isArray(data)) {
-      throw new Error('Seed data is not in the expected array format.');
+const doSeedDatabase = async () => {
+  const batch = db.batch();
+
+  // Lee el archivo directamente usando el sistema de archivos de Node.js
+  const seedPath = path.join(__dirname, 'seed-data.json');
+  const rawData = fs.readFileSync(seedPath, 'utf-8');
+  const businessesToSeed: any[] = JSON.parse(rawData);
+
+  if (!Array.isArray(businessesToSeed)) {
+    throw new Error('Seed data is not in the expected array format.');
+  }
+
+  businessesToSeed.forEach((business: any) => {
+    // Basic validation to ensure it's a valid business object
+    if (business && typeof business === 'object' && business.name) {
+      const docRef = db.collection('businesses').doc();
+      batch.set(docRef, business);
     }
-  
-    data.forEach((business: any) => {
-      if (business && typeof business === 'object' && business.name) {
-        const docRef = db.collection('businesses').doc();
-        batch.set(docRef, business);
-      }
-    });
-  
-    await batch.commit();
-    return {
-      success: true,
-      message: `${data.length} businesses from seed-data.json have been seeded.`,
-    };
+  });
+
+  await batch.commit();
+  return {
+    success: true,
+    message: `${businessesToSeed.length} businesses from seed-data.json have been seeded.`,
   };
+};
 
 export const seedDatabaseCallable = onCall(
   { region: 'europe-west1' },
@@ -448,3 +453,5 @@ export const promoteToClient = onCall(
     }
   }
 );
+
+    
