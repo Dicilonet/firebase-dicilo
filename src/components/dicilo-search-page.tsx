@@ -18,6 +18,8 @@ import {
   ExternalLink,
   Loader2,
   Mic,
+  Map,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RecommendationForm } from './RecommendationForm';
@@ -116,6 +118,7 @@ export default function DiciloSearchPage({
   );
   const [isRecommendationFormOpen, setRecommendationFormOpen] = useState(false);
   const [recommendedBusiness, setRecommendedBusiness] = useState('');
+  const [showMobileMap, setShowMobileMap] = useState(false);
 
   const handleGeolocation = useCallback(
     (isInitialLoad = false) => {
@@ -283,6 +286,10 @@ export default function DiciloSearchPage({
       !isNaN(business.coords[1])
     ) {
       setSelectedBusinessId(business.id);
+      if (showMobileMap) {
+        setMapCenter(business.coords as [number, number]);
+        setMapZoom(15);
+      }
       logAnalyticsEvent({
         type: 'cardClick',
         businessId: business.id,
@@ -299,21 +306,43 @@ export default function DiciloSearchPage({
 
   return (
     <div className="flex h-screen w-screen bg-background text-foreground">
-      <div className="hidden h-full w-1/2 md:block">
+      <div
+        className={cn('h-full w-full md:w-1/2', {
+          'hidden md:block': !showMobileMap,
+          'block': showMobileMap,
+        })}
+      >
         {isMounted ? (
-          <DiciloMap
-            center={mapCenter}
-            zoom={mapZoom}
-            businesses={filteredBusinesses}
-            selectedBusinessId={selectedBusinessId}
-            t={t}
-          />
+          <>
+            {showMobileMap && (
+              <Button
+                variant="default"
+                size="icon"
+                onClick={() => setShowMobileMap(false)}
+                className="absolute right-4 top-20 z-[1000] rounded-full"
+                aria-label="Close map view"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            )}
+            <DiciloMap
+              center={mapCenter}
+              zoom={mapZoom}
+              businesses={filteredBusinesses}
+              selectedBusinessId={selectedBusinessId}
+              t={t}
+            />
+          </>
         ) : (
           <Skeleton className="h-full w-full" />
         )}
       </div>
 
-      <div className="flex h-full w-full flex-col md:w-1/2">
+      <div
+        className={cn('flex h-full w-full flex-col md:w-1/2', {
+          'hidden md:flex': showMobileMap,
+        })}
+      >
         <Header />
 
         <div className="flex-shrink-0 px-4 pt-4">
@@ -381,6 +410,16 @@ export default function DiciloSearchPage({
                 >
                   <Navigation className="h-4 w-4" />
                 </Button>
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={() => setShowMobileMap(true)}
+                  variant="outline"
+                  aria-label="Show map"
+                  className="md:hidden"
+                >
+                  <Map className="h-4 w-4" />
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -402,7 +441,7 @@ export default function DiciloSearchPage({
                 >
                   <div className="flex items-start gap-4">
                     <Image
-                      className="h-16 w-16 rounded-full border-2 border-gray-100 object-cover"
+                      className="h-16 w-16 rounded-full border-2 border-transparent bg-green-100 object-cover p-1"
                       src={
                         business.imageUrl || 'https://placehold.co/64x64.png'
                       }

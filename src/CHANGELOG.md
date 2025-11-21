@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **161. FIX: VISIBILIDAD DE LOGOS EN TARJETAS DE EMPRESA - CÓDIGO: FIX-LOGO-CARD-BG-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 11:15 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se observó que los logos de empresa con fondo transparente y color blanco no eran visibles en las tarjetas de resultados de la página de búsqueda, ya que el fondo del contenedor también era blanco.
+  - **Solución Implementada:** Se ha añadido un fondo verde claro y suave (la clase `bg-green-100`) al componente `Image` que muestra el logo en las tarjetas de empresa. También se ha añadido un pequeño padding (`p-1`) para que el logo no toque los bordes.
+  - **Resultado:** Este cambio asegura que todos los logos, independientemente de su color, sean claramente visibles sobre un fondo de contraste, mejorando la usabilidad y la estética de la página de búsqueda.
+  - **Documentación:** Se ha registrado esta mejora visual en el `CHANGELOG.md`.
+
 ### **160. FIX: MEJORA DE VISIBILIDAD DE LOGOS EN FORMULARIOS DE EMPRESAS - CÓDIGO: FIX-LOGO-BG-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 11:00 (CET)
@@ -334,4 +344,5 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Solución Arquitectónica (Deep Merge):** Se ha implementado una solución robusta y definitiva. Ahora, la función `onSubmit` primero obtiene el documento original completo desde Firestore. Luego, utiliza la función `_.merge` de `lodash` para realizar una "fusión profunda" (deep merge), combinando de manera inteligente y recursiva los nuevos datos del formulario sobre los datos existentes.
   - **Integridad de Datos Garantizada:** Este enfoque asegura que solo los campos que el usuario ha modificado explícitamente se actualizan, mientras que todos los demás campos, especialmente los anidados, conservan sus valores originales. Se elimina de raíz el riesgo de borrado accidental de datos.
   - **Documentación:** Se ha registrado esta corrección arquitectónica fundamental en el `CHANGELOG.md` como la solución final al problema de guardado.
+
 
