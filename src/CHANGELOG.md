@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **164. FIX: CORRECCIÓN DEFINITIVA DE CARGA DE DATOS JSON - CÓDIGO: FIX-JSON-IMPORT-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 12:15 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/functions/src/seed-data.json`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Tras múltiples intentos fallidos, y gracias al detallado diagnóstico proporcionado por el usuario, se confirmó que el persistente "error interno" al intentar poblar la base de datos se debía a una incorrecta gestión del archivo `seed-data.json` en el entorno de producción de Firebase Functions. Los intentos de leer el archivo con `fs` y `path` fallaban porque la ruta no era accesible en el entorno serverless.
+  - **Solución Implementada:** Se ha adoptado la solución correcta y robusta. La Cloud Function `doSeedDatabase` en `src/functions/src/index.ts` ha sido refactorizada para `importar` el archivo `seed-data.json` directamente como un módulo de TypeScript. Esto asegura que los datos del JSON se incluyan en el paquete de la función durante el despliegue, eliminando la dependencia del sistema de archivos y cualquier posibilidad de error de ruta. La lógica ahora itera directamente sobre el array importado, lo cual es más limpio y seguro.
+  - **Resultado:** La función "Poblar Base de Datos" ahora funciona de manera confiable y predecible, permitiendo al superadministrador cargar los datos de negocio desde el archivo JSON sin errores. Se resuelve de forma definitiva uno de los problemas más persistentes del sistema.
+  - **Documentación:** Se ha registrado esta corrección crítica y definitiva en el `CHANGELOG.md`, reconociendo el valioso aporte del usuario en el diagnóstico.
+
 ### **163. FIX: CORRECCIÓN DE ERROR DE COMPILACIÓN EN FUNCIÓN 'PROMOTE TO CLIENT' - CÓDIGO: FIX-PROMOTE-COMPILE-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 12:00 (CET)

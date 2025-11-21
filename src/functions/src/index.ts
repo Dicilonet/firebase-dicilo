@@ -328,7 +328,8 @@ export const consentDecline = functions
 const doSeedDatabase = async () => {
   const batch = db.batch();
   
-  // The 'businessesToSeed' is imported. The actual array is in the 'default' key.
+  // The JSON is imported directly, TypeScript handles the object creation.
+  // The 'default' key is a common behavior when importing JSON with ES modules.
   const data = (businessesToSeed as any).default || businessesToSeed;
 
   if (!Array.isArray(data)) {
@@ -339,8 +340,9 @@ const doSeedDatabase = async () => {
   logger.info(`Found ${data.length} businesses to seed.`);
 
   data.forEach((business: any) => {
+    // Basic validation to ensure it's a valid business object
     if (business && typeof business === 'object' && business.name) {
-      const docRef = db.collection('businesses').doc();
+      const docRef = db.collection('businesses').doc(); // Auto-generate ID
       batch.set(docRef, business);
     }
   });
