@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Ecosierra Perdida Tours",
+    "category": "Reise & Tourismus / Reisebüros",
+    "description": "Agencia de viajes especializada en tours únicos en Colombia.",
+    "location": "Colombia",
+    "imageUrl": "https://mhc-int.com/wp-content/uploads/2022/03/EcoSierra_a_mhc_sw.png",
+    "imageHint": "colombia travel",
+    "address": "Colombia",
+    "phone": "",
+    "website": "https://ecosierraperdidatours.com",
+    "rating": 4.8,
+    "category_key": "category.travel_tourism",
+    "subcategory_key": "subcategory.travel_agencies",
+    "currentOfferUrl": ""
+  },
+  {
+    "name": "Carlota Stockar Viajes y Turismo (EVT)",
+    "category": "Reise & Tourismus / Reisebüros",
+    "description": "Organización de viajes y turismo en Argentina.",
+    "location": "Argentina",
+    "imageUrl": "https://mhc-int.com/wp-content/uploads/2022/03/Carlota_Stockar_mhc.png",
+    "imageHint": "argentina travel",
+    "address": "Argentina",
+    "phone": "",
+    "website": "https://www.carlotastockar.tur.ar/",
+    "rating": 4.9,
+    "category_key": "category.travel_tourism",
+    "subcategory_key": "subcategory.travel_agencies",
+    "currentOfferUrl": ""
+  }
+]

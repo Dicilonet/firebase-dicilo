@@ -14,6 +14,7 @@ import * as logger from 'firebase-functions/logger';
 import { Lang, getEmailI18n, render } from './i18n';
 import { sendMail } from './email';
 import _ from 'lodash';
+import * as businessesToSeed from './seed-data.json';
 
 // Initialize Firebase Admin SDK
 initializeApp();
@@ -324,86 +325,22 @@ export const consentDecline = functions
   .region('europe-west1')
   .https.onRequest((req, res) => handleConsent(req, res, 'declined'));
 
-const clientsToSeed = [
-  {
-    clientName: 'HörComfort Services Ammersbek',
-    clientLogoUrl: 'https://placehold.co/128x128.png',
-    clientTitle: 'Willkommen bei HörComfort Services',
-    clientSubtitle: 'Ihr Experte für Hörsysteme in Ammersbek.',
-    products: [],
-    slug: 'horcomfort-services-ammersbek',
-    socialLinks: { instagram: '', facebook: '', linkedin: '' },
-    strengths: [],
-    testimonials: [],
-    translations: {},
-    clientType: 'retailer',
-  },
-  {
-    clientName: 'Inviajes - Reisen Club',
-    clientLogoUrl: 'https://placehold.co/128x128.png',
-    clientTitle: 'Inviajes - Reisen Club',
-    clientSubtitle: 'Entdecken Sie die Welt mit uns.',
-    products: [],
-    slug: 'inviajes-reisen-club',
-    socialLinks: { instagram: '', facebook: '', linkedin: '' },
-    strengths: [],
-    testimonials: [],
-    translations: {},
-    clientType: 'premium',
-  },
-];
-const businessesToSeed = [
-  {
-    name: 'Ecosierra Perdida Tours',
-    category: 'Reise & Tourismus / Reisebüros',
-    description: 'Agencia de viajes especializada en tours únicos en Colombia.',
-    location: 'Colombia',
-    imageUrl:
-      'https://mhc-int.com/wp-content/uploads/2022/03/EcoSierra_a_mhc_sw.png',
-    imageHint: 'colombia travel',
-    address: 'Colombia',
-    phone: '',
-    website: 'https://ecosierraperdidatours.com',
-    rating: 4.8,
-    category_key: 'category.travel_tourism',
-    subcategory_key: 'subcategory.travel_agencies',
-    currentOfferUrl: '',
-  },
-  {
-    name: 'Carlota Stockar Viajes y Turismo (EVT)',
-    category: 'Reise & Tourismus / Reisebüros',
-    description: 'Organización de viajes y turismo en Argentina.',
-    location: 'Argentina',
-    imageUrl:
-      'https://mhc-int.com/wp-content/uploads/2022/03/Carlota_Stockar_mhc.png',
-    imageHint: 'argentina travel',
-    address: 'Argentina',
-    phone: '',
-    website: 'https://www.carlotastockar.tur.ar/',
-    rating: 4.9,
-    category_key: 'category.travel_tourism',
-    subcategory_key: 'subcategory.travel_agencies',
-    currentOfferUrl: '',
-  },
-];
-
 const doSeedDatabase = async () => {
   const batch = db.batch();
 
-  businessesToSeed.forEach((business) => {
-    const docRef = db.collection('businesses').doc();
-    batch.set(docRef, business);
-  });
-
-  clientsToSeed.forEach((client) => {
-    const docRef = db.collection('clients').doc();
-    batch.set(docRef, client);
+  // The 'businessesToSeed' is now an array-like object from the imported JSON
+  Object.values(businessesToSeed).forEach((business: any) => {
+    // Basic validation to ensure it's a valid business object
+    if (business && typeof business === 'object' && business.name) {
+      const docRef = db.collection('businesses').doc();
+      batch.set(docRef, business);
+    }
   });
 
   await batch.commit();
   return {
     success: true,
-    message: `${businessesToSeed.length} businesses and ${clientsToSeed.length} clients seeded successfully.`,
+    message: `${Object.keys(businessesToSeed).length} businesses from seed-data.json have been seeded.`,
   };
 };
 
@@ -432,10 +369,14 @@ export const seedDatabaseCallable = onCall(
 export const promoteToClient = onCall(
   { region: 'europe-west1' },
   async (request) => {
-    if (!request.auth || request.auth.token.role !== 'superadmin') {
+    if (
+      !request.auth ||
+      (request.auth.token.role !== 'admin' &&
+        request.auth.token.role !== 'superadmin')
+    ) {
       throw new HttpsError(
         'permission-denied',
-        'Only superadmins can perform this action.'
+        'Only admins or superadmins can perform this action.'
       );
     }
 
@@ -484,8 +425,7 @@ export const promoteToClient = onCall(
         clientType: clientType,
       };
 
-      const clientRef = db.collection('clients').doc();
-      await clientRef.set(clientData);
+      const clientRef = await addDoc(collection(db, 'clients'), clientData);
 
       return {
         success: true,
