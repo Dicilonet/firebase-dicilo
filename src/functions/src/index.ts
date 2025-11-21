@@ -325,29 +325,32 @@ export const consentDecline = functions
   .region('europe-west1')
   .https.onRequest((req, res) => handleConsent(req, res, 'declined'));
 
-  const doSeedDatabase = async () => {
-    const batch = db.batch();
-    // The 'businessesToSeed' is now an array-like object from the imported JSON
-    const data: any[] = (businessesToSeed as any).default || businessesToSeed;
+const doSeedDatabase = async () => {
+  const batch = db.batch();
   
-    if (!Array.isArray(data)) {
-      throw new Error('Seed data is not in the expected array format.');
+  // The 'businessesToSeed' is imported. The actual array is in the 'default' key.
+  const data = (businessesToSeed as any).default || businessesToSeed;
+
+  if (!Array.isArray(data)) {
+    logger.error('Seed data is not in the expected array format.', data);
+    throw new Error('Seed data is not an array.');
+  }
+
+  logger.info(`Found ${data.length} businesses to seed.`);
+
+  data.forEach((business: any) => {
+    if (business && typeof business === 'object' && business.name) {
+      const docRef = db.collection('businesses').doc();
+      batch.set(docRef, business);
     }
-  
-    data.forEach((business: any) => {
-      // Basic validation to ensure it's a valid business object
-      if (business && typeof business === 'object' && business.name) {
-        const docRef = db.collection('businesses').doc();
-        batch.set(docRef, business);
-      }
-    });
-  
-    await batch.commit();
-    return {
-      success: true,
-      message: `${data.length} businesses from seed-data.json have been seeded.`,
-    };
+  });
+
+  await batch.commit();
+  return {
+    success: true,
+    message: `${data.length} businesses from seed-data.json have been seeded.`,
   };
+};
 
 export const seedDatabaseCallable = onCall(
   { region: 'europe-west1' },
