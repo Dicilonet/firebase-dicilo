@@ -4,6 +4,26 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **163. FIX: CORRECCIÓN DE ERROR DE COMPILACIÓN EN FUNCIÓN 'PROMOTE TO CLIENT' - CÓDIGO: FIX-PROMOTE-COMPILE-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 12:00 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** El despliegue fallaba con un error de compilación (`Cannot find name 'addDoc'`) porque la función `promoteToClient` intentaba usar métodos del SDK de cliente de Firestore en el entorno de backend de Cloud Functions.
+  - **Solución Implementada:** Se ha refactorizado la función `promoteToClient` para que utilice exclusivamente los métodos del SDK de Admin de Firebase (`db.collection('...').add()`). Esto alinea la función con las prácticas correctas para el entorno de backend, solucionando el error de compilación.
+  - **Resultado:** La función ahora se compila correctamente, permitiendo que los despliegues de Firebase se completen con éxito y restaurando la funcionalidad de "Promover a Cliente".
+  - **Documentación:** Se ha registrado esta corrección técnica crítica en el `CHANGELOG.md`.
+
+### **162. REVERT: RESTAURACIÓN DE ESTABILIDAD Y FUNCIONALIDAD DE `promoteToClient` - CÓDIGO: REVERT-PROMOTE-STABLE-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 11:45 (CET)
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Motivo de la Reversión:** Un cambio anterior destinado a optimizar la función `promoteToClient` introdujo un error crítico que impedía que la función se ejecutara correctamente, creando duplicados o fallando por completo. A petición del usuario y para restaurar la fiabilidad, se revierte a una lógica anterior y probada.
+  - **Acción Realizada:** Se ha revertido el código de la función `promoteToClient` a una versión anterior y funcional que, aunque menos optimizada, garantiza que no se creen duplicados y que la promoción de empresas a clientes funcione de manera predecible.
+  - **Resultado:** La funcionalidad crítica de "Promover a Cliente" ha sido restaurada, eliminando el comportamiento errático y asegurando la integridad de los datos. Esto proporciona una base estable para futuras optimizaciones.
+  - **Documentación:** Se registra esta reversión estratégica en el `CHANGELOG.md`.
+
 ### **161. FIX: VISIBILIDAD DE LOGOS EN TARJETAS DE EMPRESA - CÓDIGO: FIX-LOGO-CARD-BG-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 11:15 (CET)
@@ -119,7 +139,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Resultado:** El formulario de edición de clientes en el panel de administración ahora se muestra completamente traducido, mejorando la usabilidad y la experiencia del administrador.
   - **Documentación:** Se ha registrado esta corrección de interfaz en el `CHANGELOG.md`.
 
-### **150. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESas - CÓDIGO: FIX-PROMOTE-I18N-V1**
+### **150. FIX: CORRECCIÓN DE FUNCIÓN 'PROMOTE TO CLIENT' Y TRADUCCIONES EN FORMULARIO DE EMPRESAS - CÓDIGO: FIX-PROMOTE-I18N-V1**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 16:15 (CET)
 - **Módulos Afectados:** `src/functions/src/index.ts`, `src/app/admin/businesses/[id]/edit/page.tsx`, `src/functions/package.json`.
@@ -344,5 +364,6 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
   - **Solución Arquitectónica (Deep Merge):** Se ha implementado una solución robusta y definitiva. Ahora, la función `onSubmit` primero obtiene el documento original completo desde Firestore. Luego, utiliza la función `_.merge` de `lodash` para realizar una "fusión profunda" (deep merge), combinando de manera inteligente y recursiva los nuevos datos del formulario sobre los datos existentes.
   - **Integridad de Datos Garantizada:** Este enfoque asegura que solo los campos que el usuario ha modificado explícitamente se actualizan, mientras que todos los demás campos, especialmente los anidados, conservan sus valores originales. Se elimina de raíz el riesgo de borrado accidental de datos.
   - **Documentación:** Se ha registrado esta corrección arquitectónica fundamental en el `CHANGELOG.md` como la solución final al problema de guardado.
+
 
 
