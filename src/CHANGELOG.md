@@ -4,7 +4,17 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
-### **173. FIX: CORRECCIÓN FINAL DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V3**
+### **174. FIX: CORRECCIÓN DEFINITIVA DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V4**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 15:00 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** El error persistente `Invalid LatLng object: (NaN, NaN)` indicaba que, a pesar de las validaciones, datos de coordenadas inválidos seguían llegando al método `map.flyTo()`. El análisis detallado del usuario reveló que la causa raíz era una sanitización de datos insuficiente en el punto de uso.
+  - **Solución Implementada:** Siguiendo la recomendación del usuario, se ha implementado una función de ayuda `validateAndParseCoords` dentro de `dicilo-map.tsx`. Esta función valida rigurosamente que las coordenadas sean un array de dos números finitos, convirtiéndolos explícitamente a `float` antes de la validación. Esta función ahora se utiliza para filtrar la lista de negocios `businessesWithCoords` y para validar las coordenadas justo antes de llamar a `map.flyTo()`, garantizando que solo se utilicen datos limpios.
+  - **Resultado:** La aplicación ya no se bloquea al encontrar datos de coordenadas inválidos. El componente del mapa es ahora robusto y resiliente, eliminando la causa raíz del error y mejorando la estabilidad general de la aplicación.
+  - **Documentación:** Se ha registrado esta corrección crítica y definitiva en el `CHANGELOG.md`, reconociendo el invaluable aporte del usuario en el diagnóstico y la solución.
+
+### **173. FIX: CORRECCIÓN DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V3**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:45 (CET)
 - **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
@@ -470,5 +480,6 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 

@@ -99,6 +99,25 @@ const createPopupContent = (
   return content;
 };
 
+// Función de validación y conversión robusta como sugeriste
+const validateAndParseCoords = (coords: any): L.LatLngTuple | null => {
+  if (!Array.isArray(coords) || coords.length !== 2) {
+    return null;
+  }
+  const lat = parseFloat(String(coords[0]));
+  const lng = parseFloat(String(coords[1]));
+
+  if (isFinite(lat) && isFinite(lng)) {
+    return [lat, lng];
+  }
+
+  console.error(
+    'DICILO_MAP_ERROR: Coordenadas inválidas detectadas y bloqueadas:',
+    coords
+  );
+  return null;
+};
+
 const DiciloMap: React.FC<DiciloMapProps> = ({
   center,
   zoom,
@@ -112,16 +131,8 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-  // Filtramos solo los negocios que tienen coordenadas válidas.
   const businessesWithCoords = useMemo(() => {
-    return businesses.filter(
-      (b) =>
-        b.coords &&
-        Array.isArray(b.coords) &&
-        b.coords.length === 2 &&
-        isFinite(b.coords[0]) &&
-        isFinite(b.coords[1])
-    );
+    return businesses.filter((b) => validateAndParseCoords(b.coords));
   }, [businesses]);
 
   useEffect(() => {
@@ -227,15 +238,16 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
 
     // Añadir o actualizar marcadores
     businessesWithCoords.forEach((business) => {
-      if (business.coords) {
+      const validCoords = validateAndParseCoords(business.coords);
+      if (validCoords) {
         const popupContent = createPopupContent(business, t);
         let marker = markersRef.current.get(business.id);
 
         if (marker) {
-          marker.setLatLng(business.coords);
+          marker.setLatLng(validCoords);
           marker.getPopup()?.setContent(popupContent);
         } else {
-          marker = L.marker(business.coords, {
+          marker = L.marker(validCoords, {
             draggable: !!onMarkerDragEnd,
           })
             .addTo(map)
@@ -262,15 +274,10 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
       const business = businessesWithCoords.find(
         (b) => b.id === selectedBusinessId
       );
-      // **FIX:** Add a more robust check for valid coordinates before calling flyTo
-      if (
-        business?.coords &&
-        Array.isArray(business.coords) &&
-        business.coords.length === 2 &&
-        isFinite(business.coords[0]) &&
-        isFinite(business.coords[1])
-      ) {
-        map.flyTo(business.coords as L.LatLngTuple, 15, {
+      const validCoords = validateAndParseCoords(business?.coords);
+
+      if (validCoords) {
+        map.flyTo(validCoords, 15, {
           animate: true,
           duration: 1,
         });
