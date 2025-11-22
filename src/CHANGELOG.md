@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **173. FIX: CORRECCIÓN FINAL DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V3**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 14:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** A pesar de los intentos anteriores, el error `Invalid LatLng object: (NaN, NaN)` persistía, indicando un fallo en la validación de los datos de coordenadas *antes* de que estos llegaran al componente del mapa. El problema real no estaba en la llamada a `flyTo`, sino en la lista de `businessesWithCoords` que se estaba generando.
+  - **Solución Implementada:** Se ha aplicado una corrección definitiva y robusta directamente en la creación de la lista `businessesWithCoords`. Ahora, el hook `useMemo` filtra los negocios para incluir únicamente aquellos cuyas coordenadas (`b.coords`) son un array de dos números finitos (`isFinite`). Esto asegura que ningún negocio con coordenadas inválidas, como `[NaN, NaN]`, entre en el sistema del mapa, eliminando la causa raíz del error.
+  - **Resultado:** La aplicación ya no se bloquea al interactuar con el mapa, ya que los datos inválidos son filtrados de manera proactiva. La estabilidad del mapa es ahora máxima.
+  - **Documentación:** Se ha registrado esta corrección arquitectónica definitiva en el `CHANGELOG.md`.
+
 ### **172. FIX: CORRECCIÓN ADICIONAL DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V2**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:30 (CET)
@@ -460,3 +470,4 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
