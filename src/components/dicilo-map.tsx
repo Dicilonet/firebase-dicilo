@@ -262,7 +262,14 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
       const business = businessesWithCoords.find(
         (b) => b.id === selectedBusinessId
       );
-      if (business?.coords) {
+      // **FIX:** Add a more robust check for valid coordinates before calling flyTo
+      if (
+        business?.coords &&
+        Array.isArray(business.coords) &&
+        business.coords.length === 2 &&
+        isFinite(business.coords[0]) &&
+        isFinite(business.coords[1])
+      ) {
         map.flyTo(business.coords, 15, {
           animate: true,
           duration: 1,

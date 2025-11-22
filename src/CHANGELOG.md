@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **171. FIX: CORRECCIÓN DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 14:15 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó un error de ejecución (`Invalid LatLng object: (NaN, NaN)`) que ocurría al hacer clic en una empresa que no tenía coordenadas geográficas válidas. El código intentaba mover el mapa a una ubicación inválida, lo que provocaba que la aplicación se bloqueara.
+  - **Solución Implementada:** Se ha añadido una validación más estricta en el componente `dicilo-map.tsx`. Antes de llamar a la función `map.flyTo()`, el código ahora verifica que el array `business.coords` no solo exista, sino que también contenga dos números finitos y válidos. Esto previene que se intente animar el mapa hacia coordenadas inválidas como `[NaN, NaN]` o `undefined`.
+  - **Resultado:** La aplicación ya no se bloquea al seleccionar empresas sin ubicación válida en el mapa. La interfaz es ahora más estable y resiliente ante datos incompletos.
+  - **Documentación:** Se ha registrado esta importante corrección de estabilidad en el `CHANGELOG.md`.
+
 ### **170. FIX: CORRECCIÓN FINAL DE VISUALIZACIÓN DEL MAPA EN MÓVILES - CÓDIGO: FIX-MOBILE-MAP-V5**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:00 (CET)
