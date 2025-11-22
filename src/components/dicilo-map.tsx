@@ -283,19 +283,29 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         (b) => b.id === selectedBusinessId
       );
       
-      // La validación aquí es una capa extra de seguridad, pero los datos ya deberían ser limpios
-      const validCoords = validateAndParseCoords(business?.coords);
+      const validCoords = business?.coords;
       
-      if (validCoords) {
-        map.flyTo(validCoords, 15, {
-          animate: true,
-          duration: 1,
-        });
-        const marker = markersRef.current.get(selectedBusinessId);
-        if (marker) {
-          setTimeout(() => {
-            marker.openPopup();
-          }, 1000);
+      if (map && validCoords) {
+        // Última línea de defensa antes de la llamada
+        const isCoordinateValid =
+          Array.isArray(validCoords) &&
+          validCoords.length === 2 &&
+          isFinite(validCoords[0]) &&
+          isFinite(validCoords[1]);
+
+        if (isCoordinateValid) {
+          map.flyTo(validCoords as L.LatLngTuple, 15, {
+            animate: true,
+            duration: 1,
+          });
+          const marker = markersRef.current.get(selectedBusinessId);
+          if (marker) {
+            setTimeout(() => {
+              marker.openPopup();
+            }, 1000);
+          }
+        } else {
+          console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", validCoords);
         }
       }
     }

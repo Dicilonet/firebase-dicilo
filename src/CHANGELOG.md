@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **176. FIX: CORRECCIÓN DEFINITIVA DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V6**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 15:30 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** El error persistente `Invalid LatLng object: (NaN, NaN)` indicaba que, a pesar de las validaciones, datos de coordenadas inválidos seguían llegando al componente del mapa. El análisis detallado del usuario reveló que la causa raíz era una sanitización de datos insuficiente en el punto de preparación de datos (`useMemo`).
+  - **Solución Implementada:** Siguiendo la recomendación precisa del usuario, se ha modificado la lógica de `useMemo` en `dicilo-map.tsx`. Ahora, se utiliza una función de ayuda `validateAndParseCoords` para filtrar rigurosamente la lista de negocios `businesses`. Cualquier negocio que no tenga coordenadas numéricas válidas es descartado en este paso inicial. Esto garantiza que el resto del componente del mapa, incluidas las funciones `flyTo` y de renderizado de marcadores, operen exclusivamente con una lista de datos limpia y segura. Se ha añadido una validación final como última línea de defensa antes de la llamada a `map.flyTo`.
+  - **Resultado:** La aplicación ya no se bloquea al encontrar datos de coordenadas inválidos. El componente del mapa es ahora robusto y resiliente, eliminando la causa raíz del error y mejorando la estabilidad general de la aplicación.
+  - **Documentación:** Se ha registrado esta corrección crítica y definitiva en el `CHANGELOG.md`, reconociendo el invaluable aporte del usuario en el diagnóstico y la solución final.
+
 ### **175. FIX: CORRECCIÓN DEFINITIVA DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V5**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 15:15 (CET)
@@ -490,6 +500,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 
