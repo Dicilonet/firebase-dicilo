@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **177. FIX: CORRECCIÓN DE VISUALIZACIÓN DEL MAPA EN MÓVILES - CÓDIGO: FIX-MOBILE-MAP-V6**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 15:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** La visualización del mapa en dispositivos móviles seguía siendo defectuosa. El mapa no se superponía correctamente a pantalla completa y carecía de un botón de cierre claro, lo que resultaba en una mala experiencia de usuario.
+  - **Solución Implementada:** Se ha refactorizado la lógica y el CSS en `dicilo-search-page.tsx`. Ahora, el mapa en móviles se activa como una superposición absoluta (`absolute inset-0`) con un `z-index` alto, asegurando que cubra toda la pantalla. Se ha añadido un botón de cierre ("X") prominente y funcional en la esquina superior derecha, también con un `z-index` superior, para garantizar su visibilidad y permitir al usuario volver a la lista de resultados sin ambigüedades. Se ha corregido la disposición de los elementos para que la lista de negocios se muestre correctamente debajo de la búsqueda.
+  - **Resultado:** La funcionalidad del mapa en móviles es ahora robusta, intuitiva y visualmente correcta. El usuario puede alternar entre la lista de resultados y la vista del mapa a pantalla completa sin problemas ni errores.
+  - **Documentación:** Se ha registrado esta corrección definitiva en el `CHANGELOG.md`, solucionando los problemas de usabilidad móvil reportados.
+
 ### **176. FIX: CORRECCIÓN DEFINITIVA DE ERROR "INVALID LATLNG" EN EL MAPA - CÓDIGO: FIX-MAP-LATLNG-V6**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 15:30 (CET)
@@ -500,6 +510,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 

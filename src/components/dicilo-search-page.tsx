@@ -307,15 +307,9 @@ export default function DiciloSearchPage({
   };
 
   return (
-    <div className="flex h-screen w-screen bg-background text-foreground md:flex-row flex-col">
-      {/* Columna del Mapa */}
-      <div
-        className={cn(
-          'h-1/2 w-full md:h-full md:w-1/2',
-          'md:block', // Siempre visible en desktop
-          showMobileMap ? 'hidden' : 'hidden' // Por defecto oculto en movil
-        )}
-      >
+    <div className="flex h-screen w-screen flex-col bg-background text-foreground md:flex-row">
+      {/* Columna del Mapa (solo para desktop) */}
+      <div className="hidden h-full md:block md:w-1/2">
         {isMounted ? (
           <DiciloMap
             center={mapCenter}
@@ -330,12 +324,7 @@ export default function DiciloSearchPage({
       </div>
 
       {/* Columna de Búsqueda y Resultados */}
-      <div
-        className={cn(
-          'flex h-full w-full flex-col',
-          'md:w-1/2'
-        )}
-      >
+      <div className="flex h-full w-full flex-col md:w-1/2">
         <Header />
         <div className="flex-shrink-0 px-4 pt-4">
           <Card className="w-full shadow-lg">
