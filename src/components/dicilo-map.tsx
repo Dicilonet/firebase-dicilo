@@ -274,8 +274,9 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
       const business = businessesWithCoords.find(
         (b) => b.id === selectedBusinessId
       );
+      
       const validCoords = validateAndParseCoords(business?.coords);
-
+      
       if (validCoords) {
         map.flyTo(validCoords, 15, {
           animate: true,
