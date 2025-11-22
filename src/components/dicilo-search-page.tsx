@@ -286,10 +286,11 @@ export default function DiciloSearchPage({
       !isNaN(business.coords[1])
     ) {
       setSelectedBusinessId(business.id);
-      if (showMobileMap) {
-        setMapCenter(business.coords as [number, number]);
-        setMapZoom(15);
+      if (window.innerWidth < 768) { // Check for mobile screen size
+        setShowMobileMap(true);
       }
+      setMapCenter(business.coords as [number, number]);
+      setMapZoom(15);
       logAnalyticsEvent({
         type: 'cardClick',
         businessId: business.id,
@@ -308,23 +309,16 @@ export default function DiciloSearchPage({
     <div className="flex h-screen w-screen bg-background text-foreground">
       <div
         className={cn('h-full w-full md:w-1/2', {
-          'hidden md:block': !showMobileMap,
-          'block': showMobileMap,
+          'hidden md:block': showMobileMap,
         })}
       >
-        {isMounted ? (
-          <>
-            {showMobileMap && (
-              <Button
-                variant="default"
-                size="icon"
-                onClick={() => setShowMobileMap(false)}
-                className="absolute right-4 top-20 z-[1000] rounded-full"
-                aria-label="Close map view"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            )}
+        <div
+          className={cn(
+            'relative h-full w-full',
+            showMobileMap ? 'hidden md:block' : 'block'
+          )}
+        >
+          {isMounted ? (
             <DiciloMap
               center={mapCenter}
               zoom={mapZoom}
@@ -332,10 +326,10 @@ export default function DiciloSearchPage({
               selectedBusinessId={selectedBusinessId}
               t={t}
             />
-          </>
-        ) : (
-          <Skeleton className="h-full w-full" />
-        )}
+          ) : (
+            <Skeleton className="h-full w-full" />
+          )}
+        </div>
       </div>
 
       <div
@@ -492,6 +486,28 @@ export default function DiciloSearchPage({
           </div>
         </ScrollArea>
       </div>
+
+      {showMobileMap && (
+        <div className="absolute inset-0 z-40 h-full w-full md:hidden">
+          <Button
+            variant="default"
+            size="icon"
+            onClick={() => setShowMobileMap(false)}
+            className="absolute right-4 top-4 z-50 rounded-full"
+            aria-label="Close map view"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+          <DiciloMap
+            center={mapCenter}
+            zoom={mapZoom}
+            businesses={filteredBusinesses}
+            selectedBusinessId={selectedBusinessId}
+            t={t}
+          />
+        </div>
+      )}
+
       <RecommendationForm
         isOpen={isRecommendationFormOpen}
         setIsOpen={setRecommendationFormOpen}

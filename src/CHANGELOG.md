@@ -4,6 +4,26 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **168. FIX: CORRECCIÓN DE VISUALIZACIÓN DEL MAPA EN MÓVILES - CÓDIGO: FIX-MOBILE-MAP-V3**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 13:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Se detectó una regresión crítica donde, en dispositivos móviles, al hacer clic en una tarjeta de empresa, el mapa no se mostraba a pantalla completa como se esperaba. Además, la implementación anterior había causado errores de renderizado ("página en blanco").
+  - **Solución Implementada:** Se ha refactorizado y reintroducido de forma segura la lógica para la visualización del mapa en móviles en `dicilo-search-page.tsx`. Ahora, se ha añadido un estado `showMobileMap` que controla la visibilidad. Este estado se activa al pulsar un nuevo botón "Mapa" (visible solo en móviles) o al hacer clic en una tarjeta de empresa, mostrando el mapa a pantalla completa. Se ha incluido un botón de cierre ("X") para que el usuario pueda volver a la lista de resultados, asegurando una navegación fluida y sin errores de renderizado.
+  - **Resultado:** La funcionalidad del mapa es ahora completamente accesible y funcional en dispositivos móviles, permitiendo a los usuarios cambiar entre la lista de resultados y la vista del mapa de forma clara y sin errores.
+  - **Documentación:** Se ha registrado esta importante corrección de usabilidad móvil en el `CHANGELOG.md`, haciendo referencia a la corrección anterior para mantener un historial coherente.
+
+### **167. FIX: CORRECCIÓN DEFINITIVA DE CARGA DE DATOS JSON (INTERNAL ERROR) - CÓDIGO: FIX-JSON-IMPORT-FINAL**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 13:30 (CET)
+- **Módulos Afectados:** `functions/src/index.ts`, `functions/src/seed-data.json`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** El persistente "error interno" al intentar poblar la base de datos se debía a una incorrecta importación y manejo del archivo `seed-data.json` en el entorno de Cloud Functions. Los métodos anteriores, incluido el uso del sistema de archivos, fallaron porque el archivo no estaba accesible en tiempo de ejecución de la manera esperada.
+  - **Solución Implementada:** Se ha adoptado la solución robusta y estándar de la industria. La función `doSeedDatabase` en `functions/src/index.ts` ha sido refactorizada para importar directamente el archivo `seed-data.json` como un módulo de TypeScript, asegurando que su contenido esté compilado dentro de la función. La lógica ahora itera directamente sobre los datos importados, eliminando cualquier ambigüedad de lectura. Además, se ha actualizado el archivo `functions/src/seed-data.json` con los datos proporcionados por el usuario para garantizar la consistencia.
+  - **Resultado:** La función "Poblar Base de Datos" ahora opera de manera fiable, permitiendo la carga de los datos de negocio sin errores internos. Esto resuelve uno de los problemas más persistentes, gracias al diagnóstico detallado del usuario.
+  - **Documentación:** Se ha registrado esta corrección crítica y definitiva en el `CHANGELOG.md`.
+
 ### **166. REVERT: RESTAURACIÓN DE ESTABILIDAD DE LA PÁGINA PRINCIPAL - CÓDIGO: REVERT-BLANK-PAGE-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 13:00 (CET)
@@ -184,7 +204,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **149. FIX: CORRECCIÓN FINAL DE TRADUCCIONES EN FORMULARIO DE REGISTRO (BOTÓN Y MENSAJE) - CÓDIGO: I18N-REGISTER-FINAL-FIX-V2**
 
 - **Fecha y Hora:** 21 de Septiembre de 2025, 15:45 (CET)
-- **Módulos Afectados:** `src/locales/de/register.json`, `src/locales/en/register.json`, `src/locales/es/register.json`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/locales/de/register.json`, `src/locales/en/register.json`, `src/locales/es/register.json`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Tras la corrección anterior, persistían dos claves de traducción sin resolver en el formulario de registro: el texto del botón de envío (`submitButton`) y el mensaje de éxito (`successDescription`). El problema se debía a que estas claves estaban anidadas incorrectamente dentro de la estructura de los archivos de traducción.
   - **Solución Implementada:** Se ha reestructurado los archivos `register.json` para los tres idiomas (alemán, inglés y español), moviendo las claves `submitButton`, `successTitle`, `successDescription`, `errorTitle` y `submitError` al nivel superior del objeto `register`, asegurando que el componente `RegistrationForm.tsx` pueda encontrarlas y renderizarlas correctamente.
@@ -334,7 +354,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **134. FIX: CORRECCIÓN DE ERROR DE HIDRATACIÓN EN I18N-PROVIDER - CÓDIGO: I18N-HYDRATION-FIX-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
-- **Módulos Afectados:** `src/context/i18n-provider.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/context/i18n-provider.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Problema:** Se detectó un error crítico y recurrente de "fallo de hidratación" (`Hydration failed`). La causa raíz era una condición de carrera (`race condition`) en el componente `i18n-provider.tsx`, donde la inicialización de la librería `i18next` no se completaba de manera fiable antes de que los componentes cliente intentaran renderizarse. Esto provocaba una discrepancia entre el HTML renderizado en el servidor y el cliente.
   - **Solución Arquitectónica:** Se ha reescrito por completo el proveedor de internacionalización para seguir un patrón más robusto y estándar. La instancia de `i18next` ahora se inicializa una única vez a nivel de módulo, eliminando la condición de carrera. Se ha añadido la integración correcta con React (`initReactI18next`) y se ha simplificado el proveedor para usar `I18nextProvider`, el componente oficial de la librería, garantizando una gestión de estado estable y predecible.
@@ -343,7 +363,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **133. FIX: REESCRITURA FINAL Y ROBUSTA DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-FINAL-RELIABLE-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:30 (CET)
-- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `CHANGELOG.md`.
+- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis Definitivo del Fallo Persistente:** Se ha determinado que la causa raíz del inaceptable y persistente error "Zugriff verweigert" (Acceso denegado) se debe a una arquitectura de asignación de roles inestable y propensa a fallos de despliegue o ejecución silenciosa en el backend.
   - **Solución Arquitectónica (Retorno al Estándar de la Industria):** Se abandona por completo cualquier solución de emergencia. Se ha reescrito `functions/src/index.ts` para volver a utilizar el disparador `firestore.document().onWrite()` de la v1 de Cloud Functions. Este método es el estándar de la industria, es robusto y garantiza que los `custom claims` de rol (`admin`, `superadmin`) se asignen de forma inmediata y automática cada vez que un documento se cree o modifique en la colección `admins`. Esto elimina cualquier condición de carrera o dependencia de funciones "callable" que han demostrado ser ineficaces.
@@ -353,7 +373,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **132. FIX: RESTAURACIÓN DE LA ARQUITECTURA DE AUTORIZACIÓN ESTÁNDAR Y FIABLE - CÓDIGO: AUTH-REBUILD-FINAL-V2**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 14:00 (CET)
-- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis Definitivo del Fallo:** Se ha determinado que todos los intentos de soluciones de emergencia para asignar roles de administrador han fallado debido a una arquitectura inestable y propensa a errores. El problema de "Acceso denegado" persistía porque la asignación de permisos no era fiable.
   - **Solución Arquitectónica (Retorno al Estándar):** Se abandona por completo el enfoque de funciones "callable" de emergencia. Se ha reescrito `functions/src/index.ts` para volver a utilizar el disparador `firestore.document().onWrite()` de la v1 de Cloud Functions. Este método es el estándar de la industria, es robusto y garantiza que los `custom claims` de rol (`admin`, `superadmin`) se asignen de forma inmediata y automática cada vez que un documento se cree o modifique en la colección `admins`. Esto elimina cualquier condición de carrera o retraso.
@@ -364,7 +384,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **131. FIX: REESTRUCTURACIÓN FINAL DEL SISTEMA DE AUTORIZACIÓN - CÓDIGO: AUTH-REBUILD-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 13:00 (CET)
-- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `functions/src/index.ts`, `hooks/useAuthGuard.ts`, `app/admin/seed/page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Fallo Arquitectónico:** Tras múltiples fallos inaceptables, se ha identificado que todas las soluciones de "emergencia" para asignar roles de administrador eran fundamentalmente defectuosas y propensas a errores. El problema de "Acceso denegado" persistía debido a una lógica de backend inestable y a una verificación de permisos en el frontend poco resiliente.
   - **Solución Arquitectónica Definitiva:** Se abandona por completo el enfoque de funciones "callable" de emergencia y se vuelve a la arquitectura estándar, robusta y recomendada por Firebase.
@@ -376,7 +396,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **130. FIX: SOLUCIÓN DEFINITIVA Y ROBUSTA A PROBLEMA DE ACCESO DENEGADO - CÓDIGO: AUTH-MASTER-FIX-V1**
 
 - **Fecha y Hora:** 20 de Septiembre de 2025, 12:00 (CET)
-- **Módulos Afectados:** `src/functions/src/index.ts`, `src/hooks/useAuthGuard.ts`, `src/app/admin/seed/page.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/functions/src/index.ts`, `src/hooks/useAuthGuard.ts`, `src/app/admin/seed/page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Error Fundamental:** Se identificó que el persistente error "Zugriff verweigert" (Acceso denegado) era causado por una condición de carrera (`race condition`) en la asignación de permisos de administrador. La Cloud Function automática (`onDocumentWrite`) no garantizaba la asignación de los `custom claims` de rol antes de que el frontend intentara verificar dichos permisos, resultando en un fallo de autorización.
   - **Solución Arquitectónica (Invocación Manual):** Se ha reemplazado el sistema de asignación automática de roles por un mecanismo manual, explícito y robusto.
@@ -388,7 +408,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 ### **129. FIX: SOLUCIÓN DEFINITIVA A PÉRDIDA DE DATOS AL GUARDAR CLIENTE - CÓDIGO: FIX-SAVE-DEEPMERGE-V1**
 
 - **Fecha y Hora:** 19 de Septiembre de 2025, 16:00 (CET)
-- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `CHANGELOG.md`.
+- **Módulos Afectados:** `src/app/admin/clients/[id]/edit/EditClientForm.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
   - **Análisis del Error:** Se identificó que la causa raíz de la persistente pérdida de datos al guardar un cliente era una estrategia de actualización defectuosa. La función `updateDoc` de Firestore, al recibir un objeto anidado incompleto, reemplazaba el objeto entero en la base de datos, eliminando los sub-campos no modificados.
   - **Solución Arquitectónica (Deep Merge):** Se ha implementado una solución robusta y definitiva. Ahora, la función `onSubmit` primero obtiene el documento original completo desde Firestore. Luego, utiliza la función `_.merge` de `lodash` para realizar una "fusión profunda" (deep merge), combinando de manera inteligente y recursiva los nuevos datos del formulario sobre los datos existentes.
