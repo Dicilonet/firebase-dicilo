@@ -441,7 +441,7 @@ export default function DiciloSearchPage({
                 >
                   <div className="flex items-start gap-4">
                     <Image
-                      className="h-16 w-16 rounded-full border-2 border-transparent bg-green-100 object-cover p-1"
+                      className="h-16 w-16 rounded-full border-2 border-transparent object-cover"
                       src={
                         business.imageUrl || 'https://placehold.co/64x64.png'
                       }

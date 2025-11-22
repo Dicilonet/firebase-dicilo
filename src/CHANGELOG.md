@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **166. REVERT: RESTAURACIÓN DE ESTABILIDAD DE LA PÁGINA PRINCIPAL - CÓDIGO: REVERT-BLANK-PAGE-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 13:00 (CET)
+- **Módulos Afectados:** `src/app/page.tsx`, `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Después de una serie de cambios en el backend, la aplicación comenzó a mostrar una "página en blanco", un error crítico de renderizado en el cliente.
+  - **Solución Implementada:** Para restaurar la funcionalidad de inmediato, se ha revertido la lógica de la página principal a un estado anterior y estable. Los archivos `page.tsx` y `dicilo-search-page.tsx` han sido restaurados a una versión en la que la página de búsqueda maneja su propia carga de datos. Esto elimina el conflicto que causaba la página en blanco y proporciona una base sólida para continuar el desarrollo.
+  - **Resultado:** La página principal vuelve a ser completamente funcional, eliminando el error crítico y permitiendo que los usuarios interactúen con la aplicación.
+  - **Documentación:** Se ha registrado esta reversión estratégica en el `CHANGELOG.md` como una medida para garantizar la estabilidad operativa.
+
 ### **165. FIX: CORRECCIÓN DEFINITIVA DE CARGA DE DATOS JSON - CÓDIGO: FIX-JSON-IMPORT-V2**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 12:30 (CET)
