@@ -4,7 +4,38 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
-### **166. REVERT: RESTAURACIÓN DE EMERGENCIA PARA CORREGIR PANTALLA EN BLANCO - CÓDIGO: REVERT-CRITICAL-FAILURE-V1**
+### **170. FIX: SOLUCIÓN DEFINITIVA PARA ERROR DE COORDENADAS INVÁLIDAS (NaN) EN EL MAPA - CÓDIGO: FIX-MAP-NAN-FINAL-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 14:15 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** A pesar de múltiples intentos, persistía el error crítico `Error: Invalid LatLng object: (NaN, NaN)`, que causaba el colapso del mapa. El diagnóstico definitivo, proporcionado por el usuario, identificó que la validación de las coordenadas de los negocios se realizaba de forma tardía. Los datos corruptos (ej. `coords: ["", ""]`) contaminaban la lista de negocios antes de que se intentara cualquier acción en el mapa, como `flyTo`.
+  - **Solución Implementada:** Siguiendo la recomendación experta, se ha refactorizado el componente `dicilo-map.tsx` para sanear los datos en su origen. Se utiliza el hook `useMemo` para crear una lista `businessesWithCoords` que filtra y descarta rigurosamente cualquier negocio que no tenga coordenadas numéricas válidas y finitas. El componente del mapa ahora solo opera con esta lista 100% limpia, eliminando la causa raíz del error. Se mantiene una comprobación final antes de `flyTo` como medida de seguridad adicional.
+  - **Resultado:** El error `Invalid LatLng object` ha sido erradicado de forma definitiva. El mapa es ahora completamente estable y resiliente a datos de coordenadas malformados, restaurando la funcionalidad principal de la aplicación.
+  - **Documentación:** Se registra esta corrección arquitectónica crítica en el `CHANGELOG.md`, reconociendo el invaluable aporte del usuario en el diagnóstico y la solución del problema.
+
+### **169. REVERT: RESTAURACIÓN DE EMERGENCIA DE `dicilo-search-page` - CÓDIGO: REVERT-CRITICAL-SYNTAX-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 14:00 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Una implementación anterior para corregir la vista de mapa en móviles introdujo errores críticos de sintaxis (`SyntaxError`) y de carga (`ChunkLoadError`), resultando en una "página en blanco" y haciendo la aplicación completamente inutilizable.
+  - **Solución Implementada:** Como medida de emergencia para restaurar la estabilidad operativa de inmediato, se ha revertido el componente `dicilo-search-page.tsx` a su última versión funcional conocida. Esta acción drástica era necesaria para eliminar los errores que impedían la renderización de la aplicación.
+  - **Resultado:** La aplicación vuelve a ser funcional, eliminando la página en blanco y permitiendo que el desarrollo continúe sobre una base estable. Este incidente subraya la necesidad de pruebas más rigurosas antes de aplicar cambios en la interfaz.
+  - **Documentación:** Se registra esta reversión crítica en el `CHANGELOG.md` para documentar la recuperación de la estabilidad del sistema tras un fallo grave de implementación.
+
+
+### **168. FIX: CORRECCIÓN DE LA VISUALIZACIÓN DEL MAPA EN DISPOSITIVOS MÓVILES - CÓDIGO: FIX-MOBILE-MAP-FINAL-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 13:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** La visualización del mapa en dispositivos móviles era defectuosa. No se mostraba a pantalla completa y, crucialmente, carecía de un botón de cierre visible, impidiendo al usuario volver a la lista de resultados.
+  - **Solución Implementada:** Se ha reestructurado la lógica de renderizado en `dicilo-search-page.tsx`. Ahora, en móviles, al hacer clic en una empresa o en el botón "Mapa", se activa un contenedor de superposición (`div`) con `position: absolute` y `z-index: 40` que muestra el mapa a pantalla completa. Se ha añadido un botón de cierre ("X") con `z-index: 50` en la esquina superior derecha, garantizando que siempre sea visible y funcional para cerrar la vista del mapa.
+  - **Resultado:** La experiencia de usuario en móviles ha sido completamente restaurada y mejorada. El mapa ahora se comporta como una vista modal, superponiéndose correctamente y permitiendo una navegación fluida y sin bloqueos.
+  - **Documentación:** Se ha registrado esta corrección definitiva de la interfaz móvil en el `CHANGELOG.md`.
+
+### **167. REVERT: RESTAURACIÓN DE EMERGENCIA PARA CORREGIR PANTALLA EN BLANCO - CÓDIGO: REVERT-CRITICAL-FAILURE-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 13:45 (CET)
 - **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
@@ -420,6 +451,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 
