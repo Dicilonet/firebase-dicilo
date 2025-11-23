@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **166. REVERT: RESTAURACIÓN DE EMERGENCIA PARA CORREGIR PANTALLA EN BLANCO - CÓDIGO: REVERT-CRITICAL-FAILURE-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 13:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Después de múltiples intentos fallidos de corregir la vista de mapa en móviles, una implementación defectuosa introdujo errores críticos (`SyntaxError` y `ChunkLoadError`), resultando en una "página en blanco" y haciendo la aplicación completamente inutilizable.
+  - **Solución Implementada:** Como medida de emergencia para restaurar la funcionalidad inmediata, se ha revertido el componente `dicilo-search-page.tsx` a una versión anterior conocida por ser estable y funcional. Esta acción drástica fue necesaria para eliminar el error crítico de renderizado.
+  - **Resultado:** La aplicación vuelve a ser funcional, eliminando la página en blanco y los errores de carga. Esto proporciona una base estable para reevaluar cualquier cambio futuro con extrema precaución.
+  - **Documentación:** Se registra esta reversión crítica en el `CHANGELOG.md` como un paso necesario para recuperar la estabilidad operativa tras una serie de errores graves.
+
 ### **166. REVERT: RESTAURACIÓN DE ESTABILIDAD DE LA PÁGINA PRINCIPAL - CÓDIGO: REVERT-BLANK-PAGE-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 13:00 (CET)
@@ -410,6 +420,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 

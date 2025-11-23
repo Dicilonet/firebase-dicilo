@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useRef, useMemo } from 'react';
-import L, { Map as LeafletMap } from 'leaflet';
+import L, { Map as LeafletMap, LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 interface Business {
@@ -99,10 +99,12 @@ const createPopupContent = (
 };
 
 // Función de validación y conversión robusta
-const validateAndParseCoords = (coords: any): L.LatLngTuple | null => {
+const validateAndParseCoords = (coords: any): LatLngTuple | null => {
   if (!Array.isArray(coords) || coords.length !== 2) {
     return null;
   }
+  
+  // SOLUCIÓN CLAVE: Usar parseFloat(String(x)) para la conversión más robusta.
   const lat = parseFloat(String(coords[0]));
   const lng = parseFloat(String(coords[1]));
 
@@ -140,10 +142,10 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         }
         return {
           ...business,
-          coords: validCoords, // Sobrescribir con coordenadas validadas
+          coords: validCoords, // Sobrescribir con coordenadas validadas y tipadas como LatLngTuple
         };
       })
-      .filter((b): b is Business & { coords: L.LatLngTuple } => b !== null);
+      .filter((b): b is Business & { coords: LatLngTuple } => b !== null);
   }, [businesses]);
 
   useEffect(() => {
@@ -283,21 +285,31 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         (b) => b.id === selectedBusinessId
       );
       
-      const validCoords = business?.coords;
+      const rawCoords = business?.coords;
       
-      if (map && validCoords) {
-        // Última línea de defensa antes de la llamada
+      if (map && rawCoords) {
+        // Última línea de defensa: El chequeo de `isFinite` es la clave para la prevención
         const isCoordinateValid =
-          Array.isArray(validCoords) &&
-          validCoords.length === 2 &&
-          isFinite(validCoords[0]) &&
-          isFinite(validCoords[1]);
+          Array.isArray(rawCoords) &&
+          rawCoords.length === 2 &&
+          isFinite(rawCoords[0]) &&
+          isFinite(rawCoords[1]);
 
         if (isCoordinateValid) {
-          map.flyTo(validCoords as L.LatLngTuple, 15, {
+          
+          // SOLUCIÓN DEFINITIVA: Forzar la conversión con parseFloat(String(x)) 
+          // y crear una nueva referencia inmutable.
+          const finalCoords: LatLngTuple = [
+            parseFloat(String(rawCoords[0])),
+            parseFloat(String(rawCoords[1])),
+          ];
+
+          // Ejecutar el vuelo con la tupla fresca
+          map.flyTo(finalCoords, 15, { // Línea 308 (corregida)
             animate: true,
             duration: 1,
           });
+          
           const marker = markersRef.current.get(selectedBusinessId);
           if (marker) {
             setTimeout(() => {
@@ -305,7 +317,9 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
             }, 1000);
           }
         } else {
-          console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", validCoords);
+          // Si llegamos aquí, a pesar de todos los filtros, el dato se corrompió
+          // o el useMemo no se ejecutó correctamente.
+          console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", rawCoords);
         }
       }
     }
