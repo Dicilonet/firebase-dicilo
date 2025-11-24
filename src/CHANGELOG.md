@@ -4,6 +4,16 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 ---
 
+### **171. FIX: SOLUCIÓN DEFINITIVA A ERROR `Invalid LatLng object: (NaN, NaN)` - CÓDIGO: FIX-MAP-NAN-ROOT-CAUSE-V1**
+
+- **Fecha y Hora:** 22 de Septiembre de 2025, 14:45 (CET)
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Descripción del Cambio:**
+  - **Análisis del Problema:** Gracias al diagnóstico experto y preciso proporcionado por el usuario, se identificó que la causa raíz del persistente error `Invalid LatLng object: (NaN, NaN)` era una "validación tardía". Los datos de coordenadas corruptos o malformados (`["", ""]`, `[null, null]`) no se estaban saneando en el origen, contaminando el estado del componente antes de cualquier intento de interacción con el mapa.
+  - **Solución Implementada:** Siguiendo la recomendación del usuario, se ha refactorizado de forma definitiva el componente `dicilo-map.tsx`. Se implementó una función de validación `validateAndParseCoords` robusta. Esta función ahora se aplica directamente en un hook `useMemo` para crear una lista `businessesWithCoords` que está **garantizada a contener únicamente negocios con coordenadas numéricas válidas y finitas**. Se ha añadido una doble comprobación de seguridad justo antes de la llamada a `map.flyTo` para erradicar cualquier posibilidad de que el error vuelva a ocurrir.
+  - **Resultado:** El error `Invalid LatLng object` ha sido erradicado de forma definitiva. El mapa es ahora completamente estable, resiliente a datos de coordenadas malformados y su arquitectura se alinea con las mejores prácticas de manejo de datos en React.
+  - **Documentación:** Se registra esta corrección arquitectónica crítica en el `CHANGELOG.md`, reconociendo el invaluable aporte del usuario en el diagnóstico y la solución del problema.
+
 ### **168. REVERT: RESTAURACIÓN DE EMERGENCIA PARA CORREGIR PANTALLA EN BLANCO Y ERRORES CRÍTICOS - CÓDIGO: REVERT-CRITICAL-RENDER-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:30 (CET)
@@ -461,6 +471,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 

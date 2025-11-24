@@ -107,10 +107,19 @@ const validateAndParseCoords = (coords: any): LatLngTuple | null => {
   const lat = parseFloat(String(coords[0]));
   const lng = parseFloat(String(coords[1]));
 
-  if (isFinite(lat) && isFinite(lng)) {
+  if (
+    !isNaN(lat) &&
+    !isNaN(lng) &&
+    isFinite(lat) &&
+    isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  ) {
     return [lat, lng];
   }
-
+  
   console.error(
     'DICILO_MAP_ERROR: Coordenadas inválidas detectadas y bloqueadas:',
     coords
@@ -285,10 +294,10 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         (b) => b.id === selectedBusinessId
       );
       
-      const validCoords = business?.coords; // Ya está validado por 'businessesWithCoords'
+      const validCoords = business?.coords;
       
+      // DOBLE CHECK: Seguridad final, como fue solicitado.
       if (validCoords) {
-        // DOBLE CHECK: Seguridad final, como fue solicitado.
         const isCoordinateValid =
           Array.isArray(validCoords) &&
           validCoords.length === 2 &&
