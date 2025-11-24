@@ -3,17 +3,17 @@
 Este documento registra los 30 cambios más recientes realizados en el proyecto. Sirve como un historial para rastrear modificaciones, entender la evolución del código y facilitar la depuración de errores.
 
 ---
-
 ### **170. FIX: SOLUCIÓN DEFINITIVA PARA ERROR DE COORDENADAS INVÁLIDAS (NaN) EN EL MAPA - CÓDIGO: FIX-MAP-NAN-FINAL-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:15 (CET)
-- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/CHANGELOG.md`.
+- **Módulos Afectados:** `src/components/dicilo-map.tsx`, `src/components/dicilo-search-page.tsx`, `src/CHANGELOG.md`.
 - **Descripción del Cambio:**
-  - **Análisis del Problema:** A pesar de múltiples intentos, persistía el error crítico `Error: Invalid LatLng object: (NaN, NaN)`, que causaba el colapso del mapa. El diagnóstico definitivo, proporcionado por el usuario, identificó que la validación de las coordenadas de los negocios se realizaba de forma tardía. Los datos corruptos (ej. `coords: ["", ""]`) contaminaban la lista de negocios antes de que se intentara cualquier acción en el mapa, como `flyTo`.
-  - **Solución Implementada:** Siguiendo la recomendación experta, se ha refactorizado el componente `dicilo-map.tsx` para sanear los datos en su origen. Se utiliza el hook `useMemo` para crear una lista `businessesWithCoords` que filtra y descarta rigurosamente cualquier negocio que no tenga coordenadas numéricas válidas y finitas. El componente del mapa ahora solo opera con esta lista 100% limpia, eliminando la causa raíz del error. Se mantiene una comprobación final antes de `flyTo` como medida de seguridad adicional.
+  - **Análisis del Problema:** A pesar de múltiples intentos, persistía el error crítico `Error: Invalid LatLng object: (NaN, NaN)`, que causaba el colapso del mapa al intentar volar hacia una ubicación. El diagnóstico definitivo, proporcionado por el usuario, identificó que la validación de las coordenadas de los negocios se realizaba de forma tardía o incompleta, permitiendo que datos corruptos (ej. `coords: ["", ""]`) contaminaran el estado del componente antes de cualquier interacción.
+  - **Solución Implementada:** Siguiendo la recomendación experta, se ha refactorizado tanto `dicilo-search-page.tsx` como `dicilo-map.tsx` para implementar una estrategia de "defensa en profundidad". 
+    1.  En `dicilo-search-page.tsx`, la función que maneja el clic en una tarjeta de negocio (`handleBusinessCardClick`) ahora realiza una validación estricta de las coordenadas antes de actualizar el estado del mapa, previniendo la propagación de datos inválidos.
+    2.  En `dicilo-map.tsx`, se ha blindado el componente: el hook `useMemo` ahora sanea y filtra agresivamente la lista de negocios, descartando cualquiera con coordenadas no válidas. Adicionalmente, se ha añadido una comprobación final `isFinite` justo antes de la llamada a `map.flyTo()`, garantizando que bajo ninguna circunstancia se ejecute una animación con datos `NaN`.
   - **Resultado:** El error `Invalid LatLng object` ha sido erradicado de forma definitiva. El mapa es ahora completamente estable y resiliente a datos de coordenadas malformados, restaurando la funcionalidad principal de la aplicación.
   - **Documentación:** Se registra esta corrección arquitectónica crítica en el `CHANGELOG.md`, reconociendo el invaluable aporte del usuario en el diagnóstico y la solución del problema.
-
 ### **169. REVERT: RESTAURACIÓN DE EMERGENCIA DE `dicilo-search-page` - CÓDIGO: REVERT-CRITICAL-SYNTAX-V1**
 
 - **Fecha y Hora:** 22 de Septiembre de 2025, 14:00 (CET)
@@ -451,6 +451,7 @@ Este documento registra los 30 cambios más recientes realizados en el proyecto.
 
 
     
+
 
 
 

@@ -91,16 +91,20 @@ const createPopupContent = (
   return content;
 };
 
-// Función de validación robusta para coordenadas.
+// Función de validación y conversión robusta
 const validateAndParseCoords = (coords: any): LatLngTuple | null => {
-  if (!Array.isArray(coords) || coords.length !== 2) return null;
+  if (!Array.isArray(coords) || coords.length !== 2) {
+    return null;
+  }
   const lat = parseFloat(String(coords[0]));
   const lng = parseFloat(String(coords[1]));
+
   if (isFinite(lat) && isFinite(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
     return [lat, lng];
   }
   return null;
 };
+
 
 const DiciloMap: React.FC<DiciloMapProps> = ({
   center,
@@ -116,7 +120,6 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   // Nivel 1: Saneamiento de datos en el origen con useMemo.
-  // Solo los negocios con coordenadas 100% válidas pasarán a `businessesWithCoords`.
   const businessesWithCoords = useMemo(() => {
     return businesses
       .map((business) => {
@@ -124,6 +127,7 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         if (!validCoords) {
           return null; // Descarta el negocio si las coordenadas son inválidas.
         }
+        // Devuelve un objeto con las coordenadas ya validadas y parseadas.
         return { ...business, coords: validCoords };
       })
       .filter((b): b is Business & { coords: LatLngTuple } => b !== null);
@@ -217,10 +221,14 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
     const business = businessesWithCoords.find((b) => b.id === selectedBusinessId);
     if (!business) return;
 
-    const validCoords = validateAndParseCoords(business.coords);
-
-    if (validCoords) {
-      map.flyTo(validCoords, 15, {
+    // Última línea de defensa: validación final antes de la animación
+    if (
+      Array.isArray(business.coords) &&
+      business.coords.length === 2 &&
+      isFinite(business.coords[0]) &&
+      isFinite(business.coords[1])
+    ) {
+      map.flyTo(business.coords as L.LatLngTuple, 15, {
         animate: true,
         duration: 1,
       });
@@ -230,7 +238,7 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
         setTimeout(() => marker.openPopup(), 1000);
       }
     } else {
-       console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", business.coords);
+      console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", business.coords);
     }
   }, [selectedBusinessId, businessesWithCoords]);
   

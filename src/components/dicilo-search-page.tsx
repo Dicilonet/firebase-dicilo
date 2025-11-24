@@ -280,10 +280,12 @@ export default function DiciloSearchPage({
   ]);
 
   const handleBusinessCardClick = (business: Business) => {
+    // Robust validation before setting state
     if (
-      business.coords?.length === 2 &&
-      !isNaN(business.coords[0]) &&
-      !isNaN(business.coords[1])
+      Array.isArray(business.coords) &&
+      business.coords.length === 2 &&
+      isFinite(business.coords[0]) &&
+      isFinite(business.coords[1])
     ) {
       setSelectedBusinessId(business.id);
       setMapCenter(business.coords as [number, number]);
@@ -298,6 +300,7 @@ export default function DiciloSearchPage({
         setShowMobileMap(true);
       }
     } else {
+      console.warn("Invalid coordinates for business:", business.name, business.coords);
       toast({
         title: t('search.locationErrorTitle'),
         description: t('search.locationErrorDesc'),
