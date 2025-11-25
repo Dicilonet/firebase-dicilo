@@ -217,28 +217,35 @@ const DiciloMap: React.FC<DiciloMapProps> = ({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !selectedBusinessId) return;
-
-    const business = businessesWithCoords.find((b) => b.id === selectedBusinessId);
+  
+    const business = businessesWithCoords.find(
+      (b) => b.id === selectedBusinessId
+    );
     if (!business) return;
-
+  
+    const validCoords = business.coords as LatLngTuple; // Sabemos que está validado por useMemo
+  
     // Última línea de defensa: validación final antes de la animación
     if (
-      Array.isArray(business.coords) &&
-      business.coords.length === 2 &&
-      isFinite(business.coords[0]) &&
-      isFinite(business.coords[1])
+      Array.isArray(validCoords) &&
+      validCoords.length === 2 &&
+      isFinite(validCoords[0]) &&
+      isFinite(validCoords[1])
     ) {
-      map.flyTo(business.coords as L.LatLngTuple, 15, {
+      map.flyTo(validCoords, 15, {
         animate: true,
         duration: 1,
       });
-
+  
       const marker = markersRef.current.get(selectedBusinessId);
       if (marker) {
         setTimeout(() => marker.openPopup(), 1000);
       }
     } else {
-      console.error("DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:", business.coords);
+      console.error(
+        'DICILO_MAP_CRITICAL_ERROR: Datos de vuelo corruptos en el último chequeo. Coords:',
+        validCoords
+      );
     }
   }, [selectedBusinessId, businessesWithCoords]);
   
