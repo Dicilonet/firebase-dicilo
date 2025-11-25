@@ -14,8 +14,7 @@ import * as logger from 'firebase-functions/logger';
 import { Lang, getEmailI18n, render } from './i18n';
 import { sendMail } from './email';
 import _ from 'lodash';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as businessesToSeed from './seed-data.json';
 
 // Initialize Firebase Admin SDK
 initializeApp();
@@ -329,27 +328,35 @@ export const consentDecline = functions
 const doSeedDatabase = async () => {
   const batch = db.batch();
 
-  // Lee el archivo directamente usando el sistema de archivos de Node.js
-  const seedPath = path.join(__dirname, 'seed-data.json');
-  const rawData = fs.readFileSync(seedPath, 'utf-8');
-  const businessesToSeed: any[] = JSON.parse(rawData);
+  // The direct import `* as businessesToSeed` creates a module object.
+  // We need to get the actual array, which is usually the 'default' export or just the values.
+  const businesses = Object.values(businessesToSeed).flat();
 
-  if (!Array.isArray(businessesToSeed)) {
-    throw new Error('Seed data is not in the expected array format.');
+  if (!Array.isArray(businesses) || businesses.length === 0) {
+    logger.error('Seed data is not an array or is empty after processing.', {
+      importedData: businessesToSeed,
+    });
+    throw new Error(
+      'Formato de datos de origen no válido o vacío. Se esperaba un array de objetos.'
+    );
   }
 
-  businessesToSeed.forEach((business: any) => {
+  logger.info(`Found ${businesses.length} businesses to seed.`);
+
+  businesses.forEach((business: any) => {
     // Basic validation to ensure it's a valid business object
     if (business && typeof business === 'object' && business.name) {
-      const docRef = db.collection('businesses').doc();
+      const docRef = db.collection('businesses').doc(); // Auto-generate ID
       batch.set(docRef, business);
+    } else {
+      logger.warn('Skipping invalid business object in seed data:', business);
     }
   });
 
   await batch.commit();
   return {
     success: true,
-    message: `${businessesToSeed.length} businesses from seed-data.json have been seeded.`,
+    message: `${businesses.length} businesses from seed-data.json have been seeded.`,
   };
 };
 
@@ -453,5 +460,3 @@ export const promoteToClient = onCall(
     }
   }
 );
-
-    
