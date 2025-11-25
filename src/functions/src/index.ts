@@ -331,7 +331,10 @@ const doSeedDatabase = async () => {
   // This is the robust way to handle direct JSON imports with varying module structures.
   const data = Object.values(businessesToSeed);
 
-  if (!Array.isArray(data) || data.length === 0) {
+  // The imported data can sometimes be nested, so we flatten it.
+  const businesses = data.flat();
+
+  if (!Array.isArray(businesses) || businesses.length === 0) {
     logger.error('Seed data is not an array or is empty after processing.', {
       importedData: businessesToSeed,
     });
@@ -339,9 +342,6 @@ const doSeedDatabase = async () => {
       'Formato de datos de origen no válido o vacío. Se esperaba un array de objetos.'
     );
   }
-
-  // The imported data is an array of arrays, so we need to flatten it.
-  const businesses = data.flat();
 
   logger.info(`Found ${businesses.length} businesses to seed.`);
 
