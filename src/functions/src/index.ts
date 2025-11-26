@@ -475,22 +475,14 @@ export const importBusinessesFromStorage = onCall(
       );
     }
 
-    const filePath = 'BD_Espana_faderbase_extended.json';
+    const fileUrl =
+      'https://firebasestorage.googleapis.com/v0/b/geosearch-fq4i9.firebasestorage.app/o/BD_Espana_faderbase_extended.json?alt=media&token=72c59df9-d9cf-4988-9af5-5415310ffb85';
 
     try {
-      const bucket = getStorage().bucket(); // Use default bucket
-      const file = bucket.file(filePath);
+      logger.info(`Starting import from URL: ${fileUrl}`);
 
-      const [exists] = await file.exists();
-      if (!exists) {
-        logger.error(`File does not exist at path: ${filePath}`);
-        throw new HttpsError('not-found', `El archivo no se encontró en la ruta: ${filePath}`);
-      }
-
-      logger.info(`Starting import from gs://${bucket.name}/${filePath}`);
-
-      const [data] = await file.download();
-      const businesses = JSON.parse(data.toString());
+      const response = await axios.get(fileUrl);
+      const businesses = response.data;
 
       if (!Array.isArray(businesses)) {
         throw new Error('El archivo JSON no contiene un array de empresas.');
@@ -510,13 +502,13 @@ export const importBusinessesFromStorage = onCall(
 
       await batch.commit();
 
-      const message = `${count} empresas importadas correctamente desde Storage.`;
+      const message = `${count} empresas importadas correctamente desde la URL.`;
       logger.info(message);
       return { success: true, message: message };
     } catch (error: any) {
-      logger.error('Error importing from storage:', error);
-      if (error instanceof HttpsError) {
-        throw error;
+      logger.error('Error importing from URL:', error);
+      if (error.isAxiosError) {
+        logger.error('Axios error detail:', error.toJSON());
       }
       throw new HttpsError('internal', error.message || 'Error desconocido durante la importación.');
     }
