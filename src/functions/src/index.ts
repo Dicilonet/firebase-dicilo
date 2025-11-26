@@ -475,13 +475,20 @@ export const importBusinessesFromStorage = onCall(
       );
     }
 
-    const bucketName = 'geosearch-fq4i9.appspot.com';
     const filePath = 'BD_Espana_faderbase_extended.json';
 
     try {
-      logger.info(`Starting import from gs://${bucketName}/${filePath}`);
-      const bucket = storage.bucket(bucketName);
+      // Use the default bucket associated with the Firebase project
+      const bucket = storage.bucket();
       const file = bucket.file(filePath);
+
+      const [exists] = await file.exists();
+      if (!exists) {
+        logger.error(`File does not exist at path: ${filePath}`);
+        throw new HttpsError('not-found', `El archivo no se encontró en la ruta: ${filePath}`);
+      }
+
+      logger.info(`Starting import from gs://${bucket.name}/${filePath}`);
 
       const [data] = await file.download();
       const businesses = JSON.parse(data.toString());
@@ -509,7 +516,10 @@ export const importBusinessesFromStorage = onCall(
       return { success: true, message: message };
     } catch (error: any) {
       logger.error('Error importing from storage:', error);
-      throw new HttpsError('internal', error.message);
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      throw new HttpsError('internal', error.message || 'Error desconocido durante la importación.');
     }
   }
 );

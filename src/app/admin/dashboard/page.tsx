@@ -252,7 +252,7 @@ const DashboardContent: React.FC = () => {
               <Button
                 onClick={handleImportFromStorage}
                 disabled={isImporting}
-                variant="outline"
+                variant="default"
               >
                 {isImporting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
