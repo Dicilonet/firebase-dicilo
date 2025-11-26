@@ -478,8 +478,7 @@ export const importBusinessesFromStorage = onCall(
     const filePath = 'BD_Espana_faderbase_extended.json';
 
     try {
-      // Use the default bucket associated with the Firebase project
-      const bucket = storage.bucket();
+      const bucket = getStorage().bucket(); // Use default bucket
       const file = bucket.file(filePath);
 
       const [exists] = await file.exists();
