@@ -7,6 +7,7 @@ import * as functions from 'firebase-functions';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import axios from 'axios';
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
@@ -19,6 +20,7 @@ import * as businessesToSeed from './seed-data.json';
 // Initialize Firebase Admin SDK
 initializeApp();
 const db = getFirestore();
+const storage = getStorage();
 
 /**
  * Sets custom claims on a user to grant admin privileges. This function is triggered
@@ -459,6 +461,55 @@ export const promoteToClient = onCall(
         'internal',
         error.message || 'Failed to promote business.'
       );
+    }
+  }
+);
+
+export const importBusinessesFromStorage = onCall(
+  { region: 'europe-west1' },
+  async (request) => {
+    if (!request.auth || request.auth.token.role !== 'superadmin') {
+      throw new HttpsError(
+        'permission-denied',
+        'Only superadmins can perform this action.'
+      );
+    }
+
+    const bucketName = 'geosearch-fq4i9.appspot.com';
+    const filePath = 'BD_Espana_faderbase_extended.json';
+
+    try {
+      logger.info(`Starting import from gs://${bucketName}/${filePath}`);
+      const bucket = storage.bucket(bucketName);
+      const file = bucket.file(filePath);
+
+      const [data] = await file.download();
+      const businesses = JSON.parse(data.toString());
+
+      if (!Array.isArray(businesses)) {
+        throw new Error('El archivo JSON no contiene un array de empresas.');
+      }
+
+      logger.info(`Found ${businesses.length} businesses to import.`);
+
+      const batch = db.batch();
+      let count = 0;
+      businesses.forEach((business: any) => {
+        if (business && typeof business === 'object' && business.name) {
+          const docRef = db.collection('businesses').doc(); // Auto-generate ID
+          batch.set(docRef, business);
+          count++;
+        }
+      });
+
+      await batch.commit();
+
+      const message = `${count} empresas importadas correctamente desde Storage.`;
+      logger.info(message);
+      return { success: true, message: message };
+    } catch (error: any) {
+      logger.error('Error importing from storage:', error);
+      throw new HttpsError('internal', error.message);
     }
   }
 );

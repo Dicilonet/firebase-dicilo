@@ -21,6 +21,7 @@ import {
   RefreshCw,
   BarChartHorizontal,
   FileText,
+  DownloadCloud,
 } from 'lucide-react';
 import { useAdminUser, useAuthGuard } from '@/hooks/useAuthGuard';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -32,6 +33,10 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 // --- CONFIGURACIÓN ---
 const functions = getFunctions(app, 'europe-west1');
 const seedDatabaseCallable = httpsCallable(functions, 'seedDatabaseCallable');
+const importFromStorageCallable = httpsCallable(
+  functions,
+  'importBusinessesFromStorage'
+);
 const syncExistingCustomersToErp = httpsCallable(
   functions,
   'syncExistingCustomersToErp'
@@ -88,6 +93,8 @@ const DashboardContent: React.FC = () => {
   const { isPending: isSyncing, runAction: runSyncAction } = useServerAction(
     syncExistingCustomersToErp
   );
+  const { isPending: isImporting, runAction: runImportAction } =
+    useServerAction(importFromStorageCallable);
 
   // --- MANEJADORES DE EVENTOS ---
 
@@ -128,6 +135,35 @@ const DashboardContent: React.FC = () => {
           : error.message || t('dashboard.seedingErrorDesc');
       toast({
         title: t('dashboard.seedingErrorTitle'),
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleImportFromStorage = async () => {
+    toast({
+      title: 'Iniciando importación...',
+      description: 'Los datos se están importando desde el almacenamiento.',
+    });
+    try {
+      const result = (await runImportAction({})) as any;
+      if (result.data.success) {
+        toast({
+          title: 'Importación Exitosa',
+          description: result.data.message,
+        });
+      } else {
+        throw new Error(result.data.message || 'Error desconocido');
+      }
+    } catch (error: any) {
+      console.error('Importing error:', error);
+      const errorMessage =
+        error.code === 'permission-denied'
+          ? 'Permiso denegado.'
+          : error.message || 'Error al importar desde el almacenamiento.';
+      toast({
+        title: 'Error de Importación',
         description: errorMessage,
         variant: 'destructive',
       });
@@ -212,6 +248,18 @@ const DashboardContent: React.FC = () => {
                   <RefreshCw className="mr-2 h-4 w-4" />
                 )}
                 {t('dashboard.sync.button')}
+              </Button>
+              <Button
+                onClick={handleImportFromStorage}
+                disabled={isImporting}
+                variant="outline"
+              >
+                {isImporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <DownloadCloud className="mr-2 h-4 w-4" />
+                )}
+                Importar desde Storage
               </Button>
             </div>
           </div>
