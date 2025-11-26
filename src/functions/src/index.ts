@@ -474,25 +474,32 @@ export const importBusinessesFromStorage = onCall(
       );
     }
 
-    const bucket = admin.storage().bucket();
-    const file = bucket.file('BD_Espana_faderbase_extended.json');
+    const bucket = admin.storage().bucket(); // Use default bucket
+    const fileName = 'BD_Espana_faderbase_extended.json';
+    const file = bucket.file(fileName);
 
     try {
-      logger.info(
-        `Attempting to download file from bucket: ${bucket.name}, path: ${file.name}`
-      );
+      const [exists] = await file.exists();
+      if (!exists) {
+        logger.error(`File ${fileName} not found in bucket ${bucket.name}.`);
+        throw new HttpsError(
+          'not-found',
+          `File '${fileName}' not found in the default storage bucket.`
+        );
+      }
 
+      logger.info(`Downloading file: ${fileName}`);
       const [contents] = await file.download();
       const businesses = JSON.parse(contents.toString());
 
       if (!Array.isArray(businesses)) {
-        throw new Error('El archivo JSON no contiene un array de empresas.');
+        throw new Error('The JSON file does not contain an array of businesses.');
       }
 
       logger.info(`Found ${businesses.length} businesses to import.`);
       let importedCount = 0;
+      const batchSize = 450; // Firestore batch write limit is 500
 
-      const batchSize = 450;
       for (let i = 0; i < businesses.length; i += batchSize) {
         const batch = db.batch();
         const chunk = businesses.slice(i, i + batchSize);
@@ -501,6 +508,8 @@ export const importBusinessesFromStorage = onCall(
           if (business && typeof business === 'object' && business.name) {
             const docRef = db.collection('businesses').doc(); // Auto-generate ID
             batch.set(docRef, business);
+          } else {
+            logger.warn('Skipping invalid business object in import data:', business);
           }
         });
 
@@ -511,20 +520,17 @@ export const importBusinessesFromStorage = onCall(
         );
       }
 
-      const message = `${importedCount} empresas importadas correctamente desde Storage.`;
+      const message = `${importedCount} businesses imported successfully from Storage.`;
       logger.info(message);
       return { success: true, message: message };
     } catch (error: any) {
       logger.error('Error importing from Storage:', error);
-      if (error.code === 404) {
-        throw new HttpsError(
-          'not-found',
-          `El archivo 'BD_Espana_faderbase_extended.json' no se encontró en el bucket de almacenamiento.`
-        );
+      if (error instanceof HttpsError) {
+        throw error;
       }
       throw new HttpsError(
         'internal',
-        error.message || 'Error desconocido durante la importación desde Storage.'
+        error.message || 'Unknown error during import from Storage.'
       );
     }
   }
