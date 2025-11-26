@@ -7,7 +7,6 @@ import * as functions from 'firebase-functions';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { getStorage } from 'firebase-admin/storage';
 import axios from 'axios';
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
@@ -20,7 +19,6 @@ import * as businessesToSeed from './seed-data.json';
 // Initialize Firebase Admin SDK
 initializeApp();
 const db = getFirestore();
-const storage = getStorage();
 
 /**
  * Sets custom claims on a user to grant admin privileges. This function is triggered
@@ -475,7 +473,8 @@ export const importBusinessesFromStorage = onCall(
       );
     }
 
-    const fileUrl = 'https://firebasestorage.googleapis.com/v0/b/geosearch-fq4i9.firebasestorage.app/o/BD_Espana_faderbase_extended.json?alt=media&token=72c59df9-d9cf-4988-9af5-5415310ffb85';
+    const fileUrl =
+      'https://firebasestorage.googleapis.com/v0/b/geosearch-fq4i9.firebasestorage.app/o/BD_Espana_faderbase_extended.json?alt=media&token=72c59df9-d9cf-4988-9af5-5415310ffb85';
 
     try {
       logger.info(`Starting import from URL: ${fileUrl}`);
@@ -495,16 +494,18 @@ export const importBusinessesFromStorage = onCall(
       for (let i = 0; i < businesses.length; i += batchSize) {
         const batch = db.batch();
         const chunk = businesses.slice(i, i + batchSize);
-        
+
         chunk.forEach((business: any) => {
           if (business && typeof business === 'object' && business.name) {
             const docRef = db.collection('businesses').doc(); // Auto-generate ID
             batch.set(docRef, business);
           }
         });
-        
+
         batchPromises.push(batch.commit());
-        logger.info(`Committing batch ${batchPromises.length} with ${chunk.length} documents.`);
+        logger.info(
+          `Committing batch ${batchPromises.length} with ${chunk.length} documents.`
+        );
       }
 
       await Promise.all(batchPromises);
@@ -512,13 +513,15 @@ export const importBusinessesFromStorage = onCall(
       const message = `${businesses.length} empresas importadas correctamente desde la URL.`;
       logger.info(message);
       return { success: true, message: message };
-
     } catch (error: any) {
       logger.error('Error importing from URL:', error);
       if (error.isAxiosError) {
         logger.error('Axios error detail:', error.toJSON());
       }
-      throw new HttpsError('internal', error.message || 'Error desconocido durante la importación.');
+      throw new HttpsError(
+        'internal',
+        error.message || 'Error desconocido durante la importación.'
+      );
     }
   }
 );
