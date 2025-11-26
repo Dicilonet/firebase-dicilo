@@ -466,7 +466,7 @@ export const promoteToClient = onCall(
 );
 
 export const importBusinessesFromStorage = onCall(
-  { region: 'europe-west1' },
+  { region: 'europe-west1', timeoutSeconds: 300 },
   async (request) => {
     if (!request.auth || request.auth.token.role !== 'superadmin') {
       throw new HttpsError(
@@ -475,8 +475,7 @@ export const importBusinessesFromStorage = onCall(
       );
     }
 
-    const fileUrl =
-      'https://firebasestorage.googleapis.com/v0/b/geosearch-fq4i9.firebasestorage.app/o/BD_Espana_faderbase_extended.json?alt=media&token=72c59df9-d9cf-4988-9af5-5415310ffb85';
+    const fileUrl = 'https://firebasestorage.googleapis.com/v0/b/geosearch-fq4i9.firebasestorage.app/o/BD_Espana_faderbase_extended.json?alt=media&token=72c59df9-d9cf-4988-9af5-5415310ffb85';
 
     try {
       logger.info(`Starting import from URL: ${fileUrl}`);
@@ -490,21 +489,30 @@ export const importBusinessesFromStorage = onCall(
 
       logger.info(`Found ${businesses.length} businesses to import.`);
 
-      const batch = db.batch();
-      let count = 0;
-      businesses.forEach((business: any) => {
-        if (business && typeof business === 'object' && business.name) {
-          const docRef = db.collection('businesses').doc(); // Auto-generate ID
-          batch.set(docRef, business);
-          count++;
-        }
-      });
+      const batchPromises = [];
+      const batchSize = 450; // Firestore batch limit is 500
 
-      await batch.commit();
+      for (let i = 0; i < businesses.length; i += batchSize) {
+        const batch = db.batch();
+        const chunk = businesses.slice(i, i + batchSize);
+        
+        chunk.forEach((business: any) => {
+          if (business && typeof business === 'object' && business.name) {
+            const docRef = db.collection('businesses').doc(); // Auto-generate ID
+            batch.set(docRef, business);
+          }
+        });
+        
+        batchPromises.push(batch.commit());
+        logger.info(`Committing batch ${batchPromises.length} with ${chunk.length} documents.`);
+      }
 
-      const message = `${count} empresas importadas correctamente desde la URL.`;
+      await Promise.all(batchPromises);
+
+      const message = `${businesses.length} empresas importadas correctamente desde la URL.`;
       logger.info(message);
       return { success: true, message: message };
+
     } catch (error: any) {
       logger.error('Error importing from URL:', error);
       if (error.isAxiosError) {
